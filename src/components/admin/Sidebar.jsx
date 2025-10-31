@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from '../../assets/Barato log-red.svg';
+import logo from '../../assets/logo.png';
 import { adminNavLinks } from '@/lib/navLinks';
 import { Link, useLocation } from 'react-router';
 

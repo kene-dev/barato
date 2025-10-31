@@ -36,7 +36,7 @@ const Signup = () => {
     const userDetails = {
     id:data.user.id,
     email:data.user.email,
-    role:'user',
+    role:'admin',
     firstName:formData.firstName,
     lastName:formData.lastName
   }

@@ -47,7 +47,7 @@ export const adminNavLinks = [
     },
     {
       path: '/admin/regions',
-      name: 'Regions',
+      name: 'Brands',
       icon:  MdCategory
     },
   ];

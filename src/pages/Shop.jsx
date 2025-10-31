@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import shopBanner from '../assets/shopBanner.png';
+import shopBanner from '../assets/shop-banner.jpg';
 import ProductCard from '@/components/ProductCard';
 import { IoFilter } from "react-icons/io5";
 import RangeSlider from '@/components/RangeSlider';
@@ -28,7 +28,7 @@ function Shop() {
   searchTerm: '',
   category: '',
   region: '',
-  priceRange: [0, 1000]
+  priceRange: [0, 600000]
 });
 
  const {data } = useGetProductsQuery(filters)
@@ -110,9 +110,9 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className='w-full my-5'>
+            <div className='w-full my-5 h-[300px] overflow-y-scroll'>
               <div className='w-full flex items-center justify-between text-primary font-semibold'>
-                <p>Region</p>
+                <p>Brands</p>
                 <p onClick={() => handleFilterChange({ region: '' })}>Reset</p>
               </div>
               <hr className='h-[1px] bg-black/70'/>
@@ -129,10 +129,10 @@ useEffect(() => {
             <div className='w-full my-5'>
               <div className='w-full flex items-center justify-between text-primary font-semibold'>
                 <p>Price Range</p>
-                <p className='cursor-pointer' onClick={() => handlePriceChange(0, 1000)}>Reset</p>
+                {/* <p className='cursor-pointer' onClick={() => handlePriceChange(0, 1000)}>Reset</p> */}
               </div>
               <hr className='h-[1px] bg-black/70'/>
-              <RangeSlider min={0} max={1000} step={1} onChange={handlePriceChange} />
+              <RangeSlider min={0} max={600000} step={1} onChange={handlePriceChange} />
             </div>
           </div>
 
@@ -162,9 +162,9 @@ useEffect(() => {
                       </div>
                     </div>
 
-                    <div className='w-full my-5'>
+                    <div className='w-full h-[300px] overflow-y-scroll my-5'>
                       <div className='w-full flex items-center justify-between text-primary font-semibold'>
-                        <p>Region</p>
+                        <p>Brands</p>
                         <p onClick={() => handleFilterChange({ region: '' })}>Reset</p>
                       </div>
                       <hr className='h-[1px] bg-black/70'/>
@@ -186,7 +186,7 @@ useEffect(() => {
                         <p className='cursor-pointer' onClick={() => handlePriceChange(0, 1000)}>Reset</p>
                       </div>
                       <hr className='h-[1px] bg-black/70'/>
-                      <RangeSlider min={0} max={1000} step={10} onChange={handlePriceChange} />
+                      <RangeSlider min={0} max={600000} step={10} onChange={handlePriceChange} />
                     </div>
                   </div>
               </SheetContent>

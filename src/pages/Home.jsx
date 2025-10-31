@@ -13,15 +13,15 @@ import {
   import doorstep from '../assets/doorstep.svg'
   import serve from '../assets/24.svg'
   import support from '../assets/support.svg'
-  import banner from '../assets/bgFixed.png';
+  import banner from '../assets/sauvage.webp';
 import { Button } from '@/components/ui/button';
 import { useGetProductsQuery } from '@/app/features/api/productApiSlice';
 import { useGetProductsByCategoryQuery } from '@/app/features/api/productApiSlice';
 
 const Home = () => {
      const {data:products} = useGetProductsQuery({page:1, pageSize:5})
-     const {data} = useGetProductsByCategoryQuery(3)
-     const {data:vegetables} = useGetProductsByCategoryQuery(1)
+     const {data} = useGetProductsByCategoryQuery(13)
+     const {data:vegetables} = useGetProductsByCategoryQuery(14)
     const service  = [
         {
             icon: doorstep,
@@ -95,7 +95,7 @@ const Home = () => {
 
         {/* DRINKS CAROUSEL SECTION */}
         <div className='w-full mb-10'>
-            <h1 className='uppercase font-semibold text-primary text-lg'>Drinks</h1>
+            <h1 className='uppercase font-semibold text-primary text-lg'>Mens Fragrances</h1>
             <hr className='h-[2px] bg-black/30' />
             
             <div className='w-full my-5 '>
@@ -124,7 +124,7 @@ const Home = () => {
 
         {/* OTHER CATEGORIES CAROUSEL SECTION */}
         <div className='w-full mb-10'>
-            <h1 className='uppercase font-semibold text-primary text-lg'>Vegetables</h1>
+            <h1 className='uppercase font-semibold text-primary text-lg'>Womens Fragrances</h1>
             <hr className='h-[2px] bg-black/30' />
             
             <div className='w-full my-5 '>

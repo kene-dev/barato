@@ -39,8 +39,21 @@ const categoriesApiSlice = apiSlice.injectEndpoints({
               return error ? { error } : { data }
             },
             invalidatesTags:['Categories']
+        }),
+
+        deleteCategory: builder.mutation({
+            async queryFn(categoryId){
+                const { data, error } = await supabase
+                .from('categories')
+                .delete()
+                .eq('id', categoryId)
+                .single()
+              
+            return error ? { error } : { data }
+            },
+            invalidatesTags:['Categories']
         })
     })
 })
 
-export const {useGetCategoriesQuery, useCreateCategoryMutation} = categoriesApiSlice;
+export const {useGetCategoriesQuery, useCreateCategoryMutation, useDeleteCategoryMutation} = categoriesApiSlice;

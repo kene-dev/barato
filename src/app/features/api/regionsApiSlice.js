@@ -31,9 +31,21 @@ const regionsApiSlice = apiSlice.injectEndpoints({
                 return error ? {error} : {data}
             },
             invalidatesTags:['Regions']
+        }),
+
+        deleteRegion: builder.mutation({
+            async queryFn(regionId){
+                const {data, error} = await supabase    
+                .from('regions')
+                .delete()
+                .eq('id', regionId)
+                .single()
+                return error ? {error} : {data}
+            },
+            invalidatesTags:['Regions']
         })
     })
 })
 
 
-export const {useGetRegionsQuery, useCreateRegionMutation} = regionsApiSlice
+export const {useGetRegionsQuery, useCreateRegionMutation, useDeleteRegionMutation} = regionsApiSlice

@@ -10,11 +10,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useCreateCategoryMutation, useGetCategoriesQuery } from '@/app/features/api/categoriesApiSlice';
+import { useCreateCategoryMutation, useDeleteCategoryMutation, useGetCategoriesQuery } from '@/app/features/api/categoriesApiSlice';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useDebounce from '@/hooks/useDebounce';
+import { MdModeEditOutline } from "react-icons/md";
+import { GoTrash } from "react-icons/go";
 
 const categorySchema = z.object({
   categoryName: z.string().trim().min(1,"Please input a category name")
@@ -41,6 +43,16 @@ const Categories = () => {
     }
   }
 
+  const [deleteCategory, {isLoading: deleteLoading}] = useDeleteCategoryMutation()
+
+  const handleDelete = async (categoryId) => {
+    try {
+      await deleteCategory(categoryId).unwrap()
+      console.log(categoryId)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className='w-full h-full pt-14'>
@@ -62,6 +74,7 @@ const Categories = () => {
                       <TableRow>
                           <TableHead className="text-left">Id</TableHead>
                           <TableHead className='text-left'>Name</TableHead>
+                          <TableHead className="text-left text-white"> Action </TableHead>
                       </TableRow>
                   </TableHeader>
   
@@ -70,6 +83,11 @@ const Categories = () => {
                               <TableRow key={category.id} className='rounded-lg shadow-lg bg-white'>
                                   <TableCell className="grow w-[250px]"> {category.id} </TableCell>
                                   <TableCell className="grow w-[250px]"> {category.categoryName} </TableCell>
+                                  <TableCell className="grow w-[250px] flex items-center gap-3">
+                                    <GoTrash onClick={() => handleDelete(category.id)} className='text-primary w-5 h-5' /> 
+                                      {deleteLoading &&  <div className='loader-primary h-5 w-5'></div>}            
+                                    {/* <MdModeEditOutline className='text-primary w-5 h-5' /> */}
+                                  </TableCell>
                               </TableRow>
                           ))}
                   </TableBody>

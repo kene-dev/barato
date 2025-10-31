@@ -6,7 +6,7 @@ import cart from '/src/assets/cart.svg'
 import { FiSearch } from "react-icons/fi";
 import { RiMenu3Line } from "react-icons/ri";
 import { MdOutlineDashboard } from "react-icons/md";
-import logo from '../assets/barato-logo-white.svg';
+import logo from '../assets/logo.png';
 import {
   Sheet,
   SheetContent,
@@ -136,42 +136,46 @@ function Header() {
       </div>
 
       {/* second section bg-red */}
-      <div className='bg-primary lg:h-[127px] h-[80px] w-full flex justify-between items-center px-10'>
-        <div className='flex flex-col'>
-          <img src={logo} className='lg:w-36 w-24  object-contain ' />
-          <p className='lg:text-xs text-[10px] text-secondary'>{t('slogan')}</p>
+      <div className="bg-primary/10 lg:h-[127px] h-[80px] w-full flex justify-between items-center px-10">
+        <div className="flex flex-col">
+          <img src={logo} className="lg:w-36 w-24 object-contain" />
+          {/* <p className="lg:text-xs text-[10px] text-primary">{t('slogan')}</p> */}
         </div>
 
-      
-          <div className='h-[50px] hidden lg:flex items-center justify-center'>
+        <div className="h-[50px] hidden lg:flex items-center justify-center">
+          <input
+            type="text"
+            placeholder={`${t('search products')}...`}
+            className="pl-4 border-y border-l w-[600px] rounded-l-lg border-primary text-primary h-full placeholder-primary/40 placeholder:text-xs focus:outline-none bg-white"
+          />
+          <button className="bg-primary text-white flex items-center justify-center rounded-r-lg h-full gap-3 px-6 text-sm">
+            <img src={search} alt="" className="w-4 h-4" />
+            {t('search')}
+          </button>
+        </div>
 
-            <input type="text" placeholder={`${t('search products')}...`} className='pl-4 border-y border-l w-[600px] rounded-l-lg border-secondary text-secondary h-full placeholder-white placeholder:text-xs focus:outline-none' />
-
-            <button className='bg-black text-white flex items-center justify-center rounded-r-lg h-full gap-3 px-6 text-sm'>
-              <img src={search} alt=""  className='w-4 h-4'/>
-             {t('search')}
-            </button>
-          </div>
-
-          <div className='flex text-secondary gap-3'>
-            <div className='relative'>
-            <Link to='/cart'>
-              <img src={cart} alt="" className='lg:w-9 lg:h-9 w-7 h-7' />
+        <div className="flex text-primary gap-3">
+          <div className="relative">
+            <Link to="/cart">
+              <img src={cart} alt="" className="lg:w-9 lg:h-9 w-7 h-7" />
             </Link>
-              <p data-test='cart-length' className='absolute bg-secondary text-tertiary text-xs -top-3 lg:-right-2 -right-3 px-2 py-1 rounded-full'> 
-                {cartLength.length}
-              </p>
-            </div>
-            <div className='hidden lg:flex flex-col text-sm'>
-              <Link to='/cart'>{ t('cart')}</Link>
-              <p className='text-sm'>$0.00 USD</p>
-            </div>
+            <p
+              data-test="cart-length"
+              className="absolute bg-primary text-white text-xs -top-3 lg:-right-2 -right-3 px-2 py-1 rounded-full border-2 border-white"
+            >
+              {cartLength.length}
+            </p>
           </div>
+          <div className="hidden lg:flex flex-col text-sm">
+            <Link to="/cart" className="text-primary">{t('cart')}</Link>
+            <p className="text-sm text-primary/80">$0.00 USD</p>
+          </div>
+        </div>
       </div>
 
       {/* third section bg-tertiary */}
 
-      <div className='w-full bg-tertiary h-[51px] lg:px-10 px-5 flex items-center lg:justify-normal justify-between lg:gap-30'>
+      <div className='w-full bg-primary h-[51px] lg:px-10 px-5 flex items-center lg:justify-normal justify-between lg:gap-30'>
         <div className='bg-[#F2F2F5] w-[300px] hidden lg:flex items-center justify-center font-semibold text-lg h-full'>
           ALL DEPARTMENTS
         </div>
@@ -187,7 +191,7 @@ function Header() {
           <ul className='flex gap-16 text-[16px] text-white items-center justify-center font-normal'>
             {navigationLinks.map(link => (
               <Link  key={link.path} to={link.path}>
-                <li className={`uppercase ${location.pathname === link.path ? 'text-primary font-bold' : 'text-white'}`}>{t(`${link.name}`)}</li>
+                <li className={`uppercase ${location.pathname === link.path ?  'text-black font-bold' : 'text-white'}`}>{t(`${link.name}`)}</li>
               </Link>
             ))}
           </ul>

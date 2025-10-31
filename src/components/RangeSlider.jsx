@@ -48,7 +48,7 @@ const RangeSlider = ({ min, max, step = 1, onChange }) => {
         
         {/* Active Progress Bar */}
         <div
-          className="absolute top-1/2 h-1.5 bg-red-600 rounded-full -translate-y-1/2 z-10"
+          className="absolute top-1/2 h-1.5 bg-primary rounded-full -translate-y-1/2 z-10"
           style={progressStyle}
         />
         
@@ -64,14 +64,14 @@ const RangeSlider = ({ min, max, step = 1, onChange }) => {
             [&::-webkit-slider-thumb]:appearance-none 
             [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white 
-            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-red-600 
+            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary 
             [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto
             [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:active:scale-125
             
             [&::-moz-range-thumb]:appearance-none 
             [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white 
-            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-red-600 
+            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary 
             [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:pointer-events-auto
             [&::-moz-range-thumb]:shadow-lg [&::-moz-range-thumb]:active:scale-125"
         />
@@ -88,14 +88,14 @@ const RangeSlider = ({ min, max, step = 1, onChange }) => {
             [&::-webkit-slider-thumb]:appearance-none 
             [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white 
-            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-red-600 
+            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary 
             [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto
             [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:active:scale-125
             
             [&::-moz-range-thumb]:appearance-none 
             [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white 
-            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-red-600 
+            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary 
             [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:pointer-events-auto
             [&::-moz-range-thumb]:shadow-lg [&::-moz-range-thumb]:active:scale-125"
         />

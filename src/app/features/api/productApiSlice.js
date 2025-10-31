@@ -123,9 +123,30 @@ const productApiSlice = apiSlice.injectEndpoints({
               }
             }
           }),
+
+          updateProduct: builder.mutation({
+            async queryFn({updateData, id}) {
+                try { 
+
+                const { data, error } = await supabase
+                .from('products')
+                .update(updateData)
+                .eq('id', id)
+                .select()
+                    
+                if (error) throw error
+                return {data}
+                } catch (error) {
+                    console.log(error)
+                    return { error };
+                }
+            },
+
+        invalidatesTags:['Products']
+        }),
           
     })
 })
 
-export const {useCreateProductMutation, useGetProductsQuery, useGetAdminProductsQuery, useGetSingleProductQuery, useGetProductsByCategoryQuery, useDeleteProductMutation} = productApiSlice
+export const {useCreateProductMutation, useGetProductsQuery, useGetAdminProductsQuery, useGetSingleProductQuery, useGetProductsByCategoryQuery, useDeleteProductMutation, useUpdateProductMutation} = productApiSlice
 
