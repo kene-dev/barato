@@ -11,22 +11,29 @@ import {
 import { GoTrash } from "react-icons/go";
 import { useDispatch, useSelector } from 'react-redux';
 import { decrementItem, incrementItem, removeFromCart, selectCartItems, selectCartTotal } from '@/app/features/cartSlice';
-import { Link, useNavigate } from 'react-router';
 
 const Cart = () => {
     const cartItems = useSelector(selectCartItems)
     const cartTotal = useSelector(selectCartTotal)
-    const user = useSelector(state => state.persistedReducer.auth.user)
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
     const proceedToCheckout = () => {
-        if(!user){
-            navigate('/auth')
-        }else if(user && cartItems.length > 0){
-            navigate('/checkout') 
-        }else{
-            return ;
+        if (cartItems.length > 0) {
+            // Create WhatsApp message with cart items
+            const itemList = cartItems.map(item => 
+                `*${item.productName}* - Qty: ${item.quantity} - ₦${item.productPrice * item.quantity}`
+            ).join('\n')
+            
+            const message = encodeURIComponent(
+                `Hello! I would like to place an order:\n\n${itemList}\n\nTotal: ₦${parseFloat(cartTotal).toFixed(2)}`
+            )
+            
+            // WhatsApp number: +234 806 011 9051
+            const whatsappNumber = '2348060119051'
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`
+            
+            // Open WhatsApp on mobile or web
+            window.open(whatsappUrl, '_blank')
         }
     }
 
@@ -66,7 +73,7 @@ const Cart = () => {
                                     </div>
                                 </div>
                             </TableCell>
-                            <TableCell colSpan={2} className='text-wrap w-max overflow-x-scroll'>${item.productPrice * item.quantity}</TableCell>
+                            <TableCell colSpan={2} className='text-wrap w-max overflow-x-scroll'>₦{item.productPrice * item.quantity}</TableCell>
                             <TableCell className='md:w-fit'><GoTrash onClick={() => dispatch(removeFromCart(item.id))} className='text-primary w-5 h-5' /></TableCell>
                         </TableRow>
                     ))}
@@ -83,11 +90,13 @@ const Cart = () => {
         <div className='lg:w-[405px] w-[90%] mx-auto h-max flex flex-col gap-8 drop-shadow-md shadow-md rounded-md p-4 py-8 text-center'>
             <div className='flex items-center justify-between'>
                 <h1 className='font-semibold lg:text-2xl'>Subtotal</h1>
-                <p className='lg:text-xl'>${parseFloat(cartTotal).toFixed(2)}</p>
+                <p className='lg:text-xl'>₦{parseFloat(cartTotal).toFixed(2)}</p>
             </div>
+
+            
             <p>Taxes and shipping calculated at checkout</p>
             <Button onClick={proceedToCheckout} className='w-full h-[58px] lg:text-xl font-semibold'>
-                {user ? "Checkout" : "Login to Checkout"}
+                Checkout on WhatsApp
             </Button>
         </div>
     </div>

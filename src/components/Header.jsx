@@ -1,58 +1,39 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import call from '/src/assets/call.svg'
-import account from '/src/assets/account.svg'
 import search from '/src/assets/search.svg'
 import cart from '/src/assets/cart.svg'
 import { FiSearch } from "react-icons/fi";
 import { RiMenu3Line } from "react-icons/ri";
-import { MdOutlineDashboard } from "react-icons/md";
 import logo from '../assets/logo.png';
 import {
   Sheet,
   SheetContent,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button"
-import { FaHeart } from "react-icons/fa";
-import { TbLogout } from "react-icons/tb";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Link, useLocation } from 'react-router'
 import { navigationLinks, Navlanguages } from '@/lib/navLinks'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { selectCartItems } from '@/app/features/cartSlice'
-import { useGetUserQuery, useSignOutUserMutation } from '@/app/features/api/authApiSlice'
 
 
 function Header() {
   const [openMenu, setOpenMenu] = useState(false)
-  const [dropMenu, setDropMenu] = useState(false)
   const location = useLocation()
   const { t } = useTranslation();
   const { i18n } = useTranslation();
   const cartLength = useSelector(selectCartItems)
-  const [signOutUser] = useSignOutUserMutation()
-  const [skip, setSkip] = useState(true)
-  const isOnline = useSelector(state => state.persistedReducer.auth.user)
-  const {data} = useGetUserQuery(isOnline?.id, {
-    skip
-  })
 
   const handleLanguageChange = (lang) => {
     i18n.changeLanguage(lang);
   };
-
-  useEffect(() => {
-    if(isOnline){
-      setSkip(false)
-    }
-  },[isOnline])
 
   return (
     <div className='w-screen font-poppins' >
@@ -64,7 +45,7 @@ function Header() {
           <p>123-456-7890</p>
         </div>
         <div className='flex justify-between items-center gap-8'>
-          <p>USD</p>
+          <p>NGN</p>
 
           {/* LANGUAGES DROPDOWN */}
           <DropdownMenu>
@@ -88,49 +69,6 @@ function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-             {/* USER ACCOUNT DROPDOWN */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex justify-center items-center gap-2">
-                  <img src={account} alt="" />
-                  <span>MY ACCOUNT</span>
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent>
-                {isOnline ? (
-                  <>
-                    <DropdownMenuItem asChild className='font-medium'>
-                        <Link to='/profile' className='w-full h-full flex items-center gap-2 outline-none'>
-                          <img src={account} alt="" />
-                          User Dashboard
-                        </Link>
-                    </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-                  {data && data[0]?.role === 'admin' && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin" className="flex w-full h-full items-center gap-2">
-                        <MdOutlineDashboard className="text-primary w-8 h-8" />
-                        <span>Admin Dashboard</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                    <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOutUser()} >
-                    <TbLogout className='text-primary w-8 h-8' />
-                    Logout
-                  </DropdownMenuItem>
-                  </>  
-                ): (
-                  <DropdownMenuItem asChild >
-                      <Link to='/auth' className='w-full h-full'>
-                        Login
-                      </Link>
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
         
         </div>
       </div>
@@ -168,7 +106,7 @@ function Header() {
           </div>
           <div className="hidden lg:flex flex-col text-sm">
             <Link to="/cart" className="text-primary">{t('cart')}</Link>
-            <p className="text-sm text-primary/80">$0.00 USD</p>
+            <p className="text-sm text-primary/80">₦0.00 NGN</p>
           </div>
         </div>
       </div>

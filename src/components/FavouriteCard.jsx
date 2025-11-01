@@ -33,7 +33,7 @@ const FavouriteCard = ({productImage, productName, productPrice, discountedPrice
           </Link>
           <div className='w-full text-center'>
               <h1 className='font-semibold'>{productName}</h1>
-              <p className='text-sm'>${productPrice?.toFixed(2)} <span className='text-primary line-through'>${(productPrice + discountedPrice)?.toFixed(2)}</span></p>
+              <p className='text-sm'>₦{productPrice?.toFixed(2)} <span className='text-primary line-through'>₦{(productPrice + discountedPrice)?.toFixed(2)}</span></p>
           </div>
           <div  className='lg:opacity-0 flex flex-col items-center justify-between gap-1 absolute  top-16 group-hover:lg:right-3 lg:-right-3 right-3 group-hover:opacity-100 duration-500 ease-out '>
               <img onClick={() => dispatch(addToCart({productImage, productName, productPrice, id}))} src={addCart} className='w-10' /> 

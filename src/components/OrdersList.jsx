@@ -59,7 +59,7 @@ const OrdersList = () => {
                         </TableCell>
 
                         <TableCell className=' w-[150px] md:w-fit'>
-                            N{parseFloat(item.total_amount).toFixed(2)}
+                            ₦{parseFloat(item.total_amount).toFixed(2)}
                         </TableCell>
 
                         <TableCell className={`text-wrap w-max overflow-x-scroll ${item.status === 'pending' && 'text-yellow-500'} `}>{item.status}</TableCell>

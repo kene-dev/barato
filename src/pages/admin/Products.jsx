@@ -240,7 +240,7 @@ const Products = () => {
 
                                         {/* <TableCell className="basis-5xl"> <img className='w-[300px] basis-5xl lg:h-[47px] h-[300.31px] object-cover' src={product.productImage} /> 
                                         </TableCell> */}
-                                        <TableCell className='grow text-center'><p className='text-center  w-[150px] pr-4'> ${product.productPrice} </p></TableCell>
+                                        <TableCell className='grow text-center'><p className='text-center  w-[150px] pr-4'> ₦{product.productPrice} </p></TableCell>
                                         <TableCell><p className='text-wrap  w-[300px] pr-4'>{product.productDescription}</p> </TableCell>
                                         <TableCell><p className='text-wrap  w-[200px] pr-4'>{product.categories?.categoryName}</p> </TableCell>
                                         <TableCell><p className='text-wrap  w-[200px] pr-4'>{product.regions?.regionName}</p> </TableCell>

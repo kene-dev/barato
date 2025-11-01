@@ -19,6 +19,7 @@ import {
 function Shop() {
  const [cat, setCat] = useState(null)
   const [openMenu, setOpenMenu] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
  const {data: categories} = useGetCategoriesQuery({searchTerm: ''})
  const {data: regions} = useGetRegionsQuery({searchTerm: ''})
 
@@ -33,6 +34,13 @@ function Shop() {
 
  const {data } = useGetProductsQuery(filters)
 
+  const handleFilterChange = (newFilters) => {
+    setFilters(prev => ({
+      ...prev,
+      ...newFilters,
+      page: 1 // Reset to first page when filters change
+    }));
+  };
 
   // Debounce the entire price range array
   const debouncedPriceRange = useDebounce(filters.priceRange, 300);
@@ -57,14 +65,6 @@ function Shop() {
     }));
   };
 
-  const handleFilterChange = (newFilters) => {
-    setFilters(prev => ({
-      ...prev,
-      ...newFilters,
-      page: 1 // Reset to first page when filters change
-    }));
-  };
-
    const cardAnimate = {
     offScreen: { y: 10, opacity: 0 },
     onScreen: (i) => ({
@@ -79,6 +79,21 @@ useEffect(() => {
    window.scrollTo({ top: 0, behavior: 'smooth' });
  }
 },[filters.page])
+
+useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth < 768)
+  }
+  
+  // Set initial value
+  handleResize()
+  
+  // Add event listener
+  window.addEventListener('resize', handleResize)
+  
+  // Cleanup
+  return () => window.removeEventListener('resize', handleResize)
+}, [])
 
   return (
     <div className='w-full h-full'>
@@ -233,6 +248,8 @@ useEffect(() => {
                 activeClassName="active"
                 forcePage={filters.page - 1} // Convert to zero-based index
                 disableInitialCallback={true}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={isMobile ? 2 : 5}
               />
 
           </div>

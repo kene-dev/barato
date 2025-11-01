@@ -174,7 +174,7 @@ const Checkout = () => {
                                         {item.quantity}
                                     </TableCell>
 
-                                    <TableCell colSpan={2} className='text-wrap w-max overflow-x-scroll'>N{item.productPrice * item.quantity}</TableCell>
+                                    <TableCell colSpan={2} className='text-wrap w-max overflow-x-scroll'>₦{item.productPrice * item.quantity}</TableCell>
 
                                     <TableCell className='md:w-fit'><GoTrash onClick={() => dispatch(removeFromCart(item.id))} className='text-primary w-5 h-5' /></TableCell>
                                 </TableRow>
@@ -193,7 +193,7 @@ const Checkout = () => {
                         <hr className='w-full border-[1px] border-black/20'/>
                             <div className='w-full flex items-center justify-between'>
                                 <h1 className='font-semibold lg:text-xl'>Total</h1>
-                                <p className='lg:text-xl'>N{parseFloat(cartTotal).toFixed(2)}</p>
+                                <p className='lg:text-xl'>₦{parseFloat(cartTotal).toFixed(2)}</p>
                             </div>
                         <hr />
                     </div>
