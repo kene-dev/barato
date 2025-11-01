@@ -42,7 +42,7 @@ function Header() {
         <div className='hidden lg:flex justify-center items-center gap-3 '>
           <img src={call} alt="" />
           <p>CALL US:</p>
-          <p>123-456-7890</p>
+          <p>+234 806 011 9051</p>
         </div>
         <div className='flex justify-between items-center gap-8'>
           <p>NGN</p>

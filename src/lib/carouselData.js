@@ -4,12 +4,12 @@ import banner2 from '../assets/tford.webp';
 export const carouselData = [
     {
         image: banner1,
-        title:'Explore Fragrances',
-        subText:'Find everything you need, from out catalogue of designer perfumes, all in one place – delivered straight to your doorstep!'
+        title:'Luxury Scents Within Reach',
+        subText:'Experience designer fragrances without the designer price tag. Authentic scents, unboxed. Your perfect scent is waiting.'
     },
     {
         image: banner2,
-        title:'Your One-Stop Shop',
-        subText:'Find everything you need, from groceries to household essentials, all in one place – delivered straight to your doorstep!'
+        title:'Smell Expensive, Shop Smart',
+        subText:'Premium perfumes at fraction of retail cost. No boxes, all beauty. Transform your scent game without breaking the bank.'
     },
 ]

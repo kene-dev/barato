@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
     Carousel,
     CarouselContent,
@@ -8,70 +8,22 @@ import {
   } from "@/components/ui/carousel"
   import ProductCard from '@/components/ProductCard'
   import Autoplay from "embla-carousel-autoplay";
-  import { RiHeartAdd2Line } from "react-icons/ri";
   import delivery from "/src/assets/delivery.svg";
-  import heart from "/src/assets/favourite.svg";
-  import liked from "/src/assets/liked.svg";
   import group from "/src/assets/Group.svg";
 import { useParams } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addToCart } from '@/app/features/cartSlice';
 import { useGetProductsByCategoryQuery, useGetSingleProductQuery } from '@/app/features/api/productApiSlice';
-import { useAddToWishlistMutation, useCheckInWishlistQuery, useRemoveFromWishlistMutation } from '@/app/features/api/wishlistApiSlice';
-import { toast } from 'react-toastify';
 
 function SingleProducts() {
     const params = useParams()
     const dispatch = useDispatch()
-    const user = useSelector(state => state.persistedReducer.auth.user)
     const {data:sp} = useGetSingleProductQuery(parseInt(params.id))
     const {data} = useGetProductsByCategoryQuery(sp?.productCategory)
-    const {data:Favoured, refetch} = useCheckInWishlistQuery({product_id :params.id},  { skip: !user })
-
-    const [addToWishlist,] = useAddToWishlistMutation()
-    const [removeFromWishlist] = useRemoveFromWishlistMutation()
 
     const addProduct = (product) => {
         dispatch(addToCart({...product}))
     }
-    const [optimisticFavourite, setOptimisticFavourite] = useState(false)
-
-    // console.log(optimisticFavourite)
-  const handleAddToWishlist = async () => {
-            if(!user) {
-                setOptimisticFavourite(false);
-                toast.error('Please login to manage your wishlist')
-                return
-            }
-           try {
-            if (!optimisticFavourite) {
-                setOptimisticFavourite(true);
-               const response = await addToWishlist({ product_id: params.id, user_id: user.id }).unwrap();
-                // console.log(response)
-                
-                toast.success('Added to your wishlist');
-            } else {
-                setOptimisticFavourite(false);
-                const response =  await removeFromWishlist({ product_id: params.id }).unwrap();
-                toast.success('Removed from your wishlist');
-            }
-            refetch();
-        } catch (error) {
-            if(error){
-                console.log("wahala", error)
-                setOptimisticFavourite(false);
-                toast.error("Operation failed. Please try again.", error);
-            }
-        }
-           
-    }
-
-    // Sync optimistic state with query data
-  useEffect(() => {
-    if (Favoured !== undefined) {
-      setOptimisticFavourite(Favoured);
-    }
-  }, [Favoured]);
 
 
   return (
@@ -92,14 +44,6 @@ function SingleProducts() {
                     <button onClick={() => addProduct(sp)} className='w-full bg-primary px-6 h-9 rounded-sm shadow-md text-white flex items-center justify-center cursor-pointer'>
                        Add to Cart
                     </button>
-
-                     {optimisticFavourite ? 
-                        ( 
-                        <img onClick={handleAddToWishlist} src={liked} className='w-10 cursor-pointer' />
-                        ): (
-                        <img onClick={handleAddToWishlist} src={heart} className='w-10 cursor-pointer' />
-                    )}
-                 
                 </div>
                 <div className='border border-black/50 w-full h-40 rounded-xl mt-6 '>
                     <div className='border-b border-black/50 h-[50%] flex'>

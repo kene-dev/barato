@@ -15,6 +15,7 @@ import {
   import support from '../assets/support.svg'
   import banner from '../assets/sauvage.webp';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router';
 import { useGetProductsQuery } from '@/app/features/api/productApiSlice';
 import { useGetProductsByCategoryQuery } from '@/app/features/api/productApiSlice';
 
@@ -86,9 +87,11 @@ const Home = () => {
         <div style={{backgroundImage: `url(${banner})`}} className='w-full h-[541px] my-10 bg-fixed bg-cover bg-center bg-no-repeat relative overflow-hidden'>
             <div className='absolute top-1/3 px-10 lg:bg-transparent bg-black/30 p-3 lg:p-0'>
                 <h1 className='lg:text-8xl text-7xl text-white drop-shadow-lg font-semibold'>BEST DEALS</h1>
-                <Button className='text-white w-[250px] h-[60px] text-lg drop-shadow-md mt-2'> 
-                    Shop Now
-                </Button>
+                <Link to="/shop">
+                    <Button className='text-white w-[250px] h-[60px] text-lg drop-shadow-md mt-2'> 
+                        Shop Now
+                    </Button>
+                </Link>
             </div>
         </div>
 

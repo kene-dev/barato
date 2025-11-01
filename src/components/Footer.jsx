@@ -1,9 +1,10 @@
 import React from 'react'
-import twitter from '/src/assets/x.svg'
 import instagram from '/src/assets/ig.svg'
 import facebook from '/src/assets/fb.svg'
 import line from '/src/assets/Line.svg'
 import logo from '../assets/logo.png';
+import { FaTiktok } from "react-icons/fa";
+import { Link } from 'react-router';
 
 function Footer() {
   return (
@@ -23,10 +24,10 @@ function Footer() {
           <div className='w-full flex flex-col gap-4 lg:w-1/3'>
             <div>
               <img src={logo} className='w-36 object-contain bg-white rounded-xl border-2 border-primary shadow-sm p-2' />
-              <h1 className='text-lg text-white drop-shadow'>Shop Smart,shop more</h1>
+              <h1 className='text-lg text-white drop-shadow'>Luxury Scents Within Reach</h1>
             </div>
             <p className='text-sm text-white/90'>
-              Find everything you need, from groceries to household essentials, all in one place – delivered straight to your doorstep!
+              Authentic designer perfumes without the luxury price tag. Smell expensive, shop smart.
             </p>
           </div>
           
@@ -34,32 +35,27 @@ function Footer() {
             <div className='flex flex-col gap-3'>
               <h1 className='font-semibold text-[20px] text-white'>PAGES</h1>
               <img src={line} alt="" className='w-[35px]' />
-              <a href='#' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Home</a>
-              <a href='#' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>About</a>
-              <a href='#' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Shop</a>
-              <a href='#' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>FAQ</a>
-              <a href='#' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Contact</a>
+              <Link to='/' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Home</Link>
+              <Link to='/about' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>About</Link>
+              <Link to='/shop' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Shop</Link>
+              <Link to='/returns-refunds' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Return Policy</Link>
+              <Link to='/cart' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Cart</Link>
             </div>
             <div className='flex flex-col gap-3'>
               <h1 className='font-semibold text-[20px] text-white'>LINKS</h1>
               <img src={line} alt="" className='w-[35px]' />
-              <a href='#' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Terms & Conditions</a>
-              <a href='#' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Shipping & Delivery</a>
-              <a href='#' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Privacy Policy</a>
+              <Link to='/returns-refunds' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Return & Refund Policy</Link>
+              <a href='#privacy-policy' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Privacy Policy</a>
             </div>
             <div className='flex flex-col gap-3'>
               <h1 className='font-semibold text-[20px] text-white'>SOCIALS</h1>
               <img src={line} alt="" className='w-[35px]' />
               <div className='flex gap-4'>
-                <a href="#" className='flex items-center justify-center w-10 h-10'>
-                  <img src={twitter} alt="Twitter" className='w-5 h-5' />
-                </a>
-
-                <a href="#" className='flex items-center justify-center w-10 h-10'>
+                <a href="https://www.instagram.com/matrix_scents" target="_blank" rel="noopener noreferrer" className='flex items-center justify-center w-10 h-10'>
                   <img src={instagram} alt="Instagram" className='w-5 h-5 ' />
                 </a>
-                <a href="#" className='flex items-center justify-center w-10 h-10'>
-                  <img src={facebook} alt="Facebook" className='w-5 h-5' />
+                <a href="https://www.tiktok.com/@matrixscents" target="_blank" rel="noopener noreferrer" className='flex items-center justify-center w-10 h-10'>
+                  <FaTiktok className='w-5 h-5' />
                 </a>
               </div>
             </div>
