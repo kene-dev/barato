@@ -10,6 +10,9 @@ import SingleProducts from "./pages/SingleProducts"
 import About from "./pages/About"
 import Cart from "./pages/Cart"
 import ReturnsRefunds from "./pages/ReturnsRefunds"
+import FAQ from "./pages/FAQ"
+import Contact from "./pages/Contact"
+import SearchResults from "./pages/SearchResults"
 import ErrorPage from "./pages/ErrorPage"
 import AdminLayout from "./pages/admin/AdminLayout"
 import Products from "./pages/admin/Products"
@@ -76,6 +79,9 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="cart" element={<Cart />} />
           <Route path="returns-refunds" element={<ReturnsRefunds />} />
+          <Route path="faq" element={<FAQ />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="search" element={<SearchResults />} />
           <Route path="*" element={<ErrorPage />} />
 
 

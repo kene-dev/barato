@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import call from '/src/assets/call.svg'
-import search from '/src/assets/search.svg'
 import cart from '/src/assets/cart.svg'
-import { FiSearch } from "react-icons/fi";
 import { RiMenu3Line } from "react-icons/ri";
 import logo from '../assets/logo.png';
+import SearchBar from './SearchBar';
 import {
   Sheet,
   SheetContent,
@@ -80,16 +79,8 @@ function Header() {
           {/* <p className="lg:text-xs text-[10px] text-primary">{t('slogan')}</p> */}
         </div>
 
-        <div className="h-[50px] hidden lg:flex items-center justify-center">
-          <input
-            type="text"
-            placeholder={`${t('search products')}...`}
-            className="pl-4 border-y border-l w-[600px] rounded-l-lg border-primary text-primary h-full placeholder-primary/40 placeholder:text-xs focus:outline-none bg-white"
-          />
-          <button className="bg-primary text-white flex items-center justify-center rounded-r-lg h-full gap-3 px-6 text-sm">
-            <img src={search} alt="" className="w-4 h-4" />
-            {t('search')}
-          </button>
+        <div className="w-[600px] hidden lg:flex items-center justify-center">
+          <SearchBar isMobile={false} />
         </div>
 
         <div className="flex text-primary gap-3">
@@ -118,9 +109,8 @@ function Header() {
           ALL DEPARTMENTS
         </div>
 
-        <div className='h-[40px] w-2/3  lg:hidden flex items-center justify-start relative'>
-            <input type="text" placeholder='Search products..' className='pl-4 w-full rounded-lg bg-white text-black h-full placeholder-black/40 placeholder:text-xs outline-none ring-0' />
-            <FiSearch className='w-4 h-4 absolute top-3 right-3 text-black'/>
+        <div className='w-2/3 lg:hidden flex items-center justify-start'>
+          <SearchBar isMobile={true} />
         </div>
 
         <RiMenu3Line onClick={() => setOpenMenu(!openMenu)} className='w-7 h-7 text-white lg:hidden' />

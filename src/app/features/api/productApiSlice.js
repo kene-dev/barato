@@ -35,11 +35,17 @@ const productApiSlice = apiSlice.injectEndpoints({
               
               let query = supabase
                 .from('products')
-                .select('*', { count: 'exact' })
+                .select('*,regions(regionName),categories(categoryName)', { count: 'exact' })
                 .order('created_at', { ascending: false })
 
                   if(searchTerm){
-                    query = query.textSearch('productName', `${searchTerm}`)
+                    // Search across multiple fields using OR with ilike
+                    // This searches in productName and productDescription fields
+                    // Escape special characters in search term for SQL LIKE
+                    const escapedTerm = searchTerm.replace(/%/g, '\\%').replace(/_/g, '\\_')
+                    const searchPattern = `%${escapedTerm}%`
+                    // Use or() with comma-separated conditions (Supabase format)
+                    query = query.or(`productName.ilike.${searchPattern},productDescription.ilike.${searchPattern}`)
                   }
                   
                   if(category){
@@ -82,7 +88,12 @@ const productApiSlice = apiSlice.injectEndpoints({
               .order('created_at', { ascending: false })
             
               if(searchTerm){
-                query = query.textSearch('productName', `${searchTerm}`)
+                // Search across multiple fields using OR with ilike
+                // Escape special characters in search term for SQL LIKE
+                const escapedTerm = searchTerm.replace(/%/g, '\\%').replace(/_/g, '\\_')
+                const searchPattern = `%${escapedTerm}%`
+                // Use or() with comma-separated conditions (Supabase format)
+                query = query.or(`productName.ilike.${searchPattern},productDescription.ilike.${searchPattern}`)
               }
 
               const startIndex = (page - 1) * pageSize;

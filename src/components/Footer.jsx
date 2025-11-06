@@ -38,12 +38,13 @@ function Footer() {
               <Link to='/' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Home</Link>
               <Link to='/about' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>About</Link>
               <Link to='/shop' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Shop</Link>
-              <Link to='/returns-refunds' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Return Policy</Link>
               <Link to='/cart' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Cart</Link>
             </div>
             <div className='flex flex-col gap-3'>
               <h1 className='font-semibold text-[20px] text-white'>LINKS</h1>
               <img src={line} alt="" className='w-[35px]' />
+              <Link to='/faq' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>FAQ</Link>
+              <Link to='/contact' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Contact</Link>
               <Link to='/returns-refunds' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Return & Refund Policy</Link>
               <a href='#privacy-policy' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Privacy Policy</a>
             </div>
