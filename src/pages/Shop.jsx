@@ -96,7 +96,7 @@ useEffect(() => {
 }, [])
 
   return (
-    <div className='w-full h-full'>
+    <div className='w-full h-full overflow-y-scroll'>
         <div className='lg:w-[60%] mx-auto px-5'>
           <img src={shopBanner} className='my-10 mb-20' />
         </div>
@@ -104,8 +104,8 @@ useEffect(() => {
         {/* PRODUCTS AREA */}
         <div className='w-full lg:h-screen 2xl:w-[80%] mx-auto flex items-start gap-5 lg:px-10'>
           {/*  WEB SCREEN FILTER AREA */}
-          <div className='lg:w-[441px] hidden lg:flex flex-col p-3'>
-            <h1>Filters</h1>
+          <div className='lg:w-[441px] hidden lg:flex flex-col p-3 capitalize'>
+            <h1 className='text-primary font-semibold'>Filters</h1>
             <div className='w-full my-2'>
 
               <div className='w-full flex items-center justify-between text-primary font-semibold'>
@@ -209,7 +209,7 @@ useEffect(() => {
           
             
           {/* MAIN PRODUCT CARD AREA */}
-          <div className='w-full h-full flex flex-col mb-10'>
+          <div className='w-full md:h-max h-full flex flex-col mb-10 overflow-y-scroll'>
               
             <div className='w-full h-full flex flex-col  md:grid md:grid-cols-3 lg:flex lg:flex-row  lg:items-start items-center lg:flex-wrap gap-3 2xl:gap-8 py-6 px-5 lg:px-0 md:mx-auto relative'>
 
@@ -230,7 +230,7 @@ useEffect(() => {
                     transition={{duration:.3, ease:"linear"}}
                     key={product.id}
                     custom={index}
-                    className='w-full lg:w-max sticky lg:static top-10'
+                    className='w-full md-h-max lg:w-max sticky lg:static top-10'
                     >
                       <ProductCard key={product.id} {...product} />
                     </motion.div>
