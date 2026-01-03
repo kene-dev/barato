@@ -1,11 +1,6 @@
 import React, { useEffect, useOptimistic, useState } from 'react'
-import soy from '../assets/soy.png'
-import favourite from '../assets/favourite.svg'
-import addCart from '../assets/addCart.svg'
-import { FaHeart } from "react-icons/fa";
-import view from '../assets/view.svg'
-import liked from '../assets/liked.svg'
-import { Link, redirect, useNavigate } from 'react-router'
+
+import { Link, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '@/app/features/cartSlice'
 import { useAddToWishlistMutation, useCheckInWishlistQuery, useRemoveFromWishlistMutation } from '@/app/features/api/wishlistApiSlice'
@@ -72,7 +67,12 @@ const ProductCard = ({productImage, productName, productPrice, discountedPrice, 
           </Link>
           <div className='w-full text-center'>
               <h1 className='font-semibold'>{productName}</h1>
-              <p className='text-sm'>₦{productPrice?.toFixed(2)} <span className='text-primary line-through'>₦{(discountedPrice ?? 0)?.toFixed(2)}</span></p>
+              <p className='text-sm text-primary'>
+                {productPrice?.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
+              </p>
+              {/* <span className='text-primary line-through'>
+                {(discountedPrice ?? 0)?.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}
+              </span> */}
           </div>
 
           {/* <div  className='lg:opacity-0 flex flex-col items-center justify-between gap-1 absolute  top-16 group-hover:lg:right-3 lg:-right-3 right-3 group-hover:opacity-100 duration-500 ease-out '>

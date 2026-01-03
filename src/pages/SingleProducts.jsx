@@ -36,8 +36,9 @@ function SingleProducts() {
             <div className='flex flex-col justify-center items-start gap-1 md:w-[600px] lg:w-[400px]'>
                 <h1 className='font-bold text-2xl'>{sp?.productName}</h1>
                 <div className='flex items-center justify-center gap-1'>
-                    <p className='text-base'>₦{sp?.productPrice.toFixed(2)}</p> 
-                    <p className='text-primary text-sm line-through'>₦{(sp?.productPrice + sp?.discountedPrice).toFixed(2)}</p>
+                    <p className='text-base text-primary'>{sp?.productPrice.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}</p> 
+
+                    {/* <p className='text-primary text-sm line-through'>₦{(sp?.productPrice + sp?.discountedPrice).toFixed(2)}</p> */}
                 </div> 
                 <p className='border-b border-black/50 text-xs pb-2'>{sp?.productDescription}</p>
                 <div className='w-full mt-3 flex gap-4 items-center'>
