@@ -26,63 +26,64 @@ import { useDispatch } from "react-redux"
 import ProfilePage from "./pages/ProfilePage"
 import Checkout from "./pages/Checkout"
 import ProtectedPage from "./components/ProtectedPage"
+import Homepage from "./pages/Homepage"
 
 
 
 function App() {
- const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
- useEffect(() => {
-  const { data: { subscription } } = supabase.auth.onAuthStateChange(
-    async (event, session) => {
-      console.log('Auth event:', event);
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth event:', event);
 
-      // Handle sign out and initial session events
-      if (event === 'SIGNED_OUT') {
-        dispatch(clearAuthState());
-        return;
+        // Handle sign out and initial session events
+        if (event === 'SIGNED_OUT') {
+          dispatch(clearAuthState());
+          return;
+        }
+
+        // Handle authenticated states
+        if (session?.user) {
+          console.log(session)
+          dispatch(setAuthState({ id: session.user.id }));
+
+        }
       }
+    );
 
-      // Handle authenticated states
-      if (session?.user) {
-        console.log(session)
-        dispatch(setAuthState({id: session.user.id}));
-        
-      }
-    }
-  );
+    // Cleanup function
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [dispatch]);
 
-  // Cleanup function
-  return () => {
-    subscription?.unsubscribe();
-  };
-}, [dispatch]);
 
- 
 
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
+        <Route index element={<Homepage />} />
 
         {/* AUTHENTICATION ROUTES */}
         <Route path='auth' >
           <Route index element={<Login />} />
           <Route path="register" element={<Signup />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path="reset-password" element={<ResetPassword/>} />
+          <Route path="reset-password" element={<ResetPassword />} />
         </Route>
 
-          {/* PUBLIC ROUTES */}
-          <Route path="shop" element={<Shop />} />
-          <Route path="shop/:id" element={<SingleProducts />} />
-          <Route path="about" element={<About />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="returns-refunds" element={<ReturnsRefunds />} />
-          <Route path="faq" element={<FAQ />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="search" element={<SearchResults />} />
-          <Route path="*" element={<ErrorPage />} />
+        {/* PUBLIC ROUTES */}
+        <Route path="shop" element={<Shop />} />
+        <Route path="shop/:id" element={<SingleProducts />} />
+        <Route path="about" element={<About />} />
+        <Route path="cart" element={<Cart />} />
+        <Route path="returns-refunds" element={<ReturnsRefunds />} />
+        <Route path="faq" element={<FAQ />} />
+        <Route path="contact" element={<Contact />} />
+        <Route path="search" element={<SearchResults />} />
+        <Route path="*" element={<ErrorPage />} />
 
 
         {/* AUTHENTICATED ROUTES */}
@@ -90,7 +91,7 @@ function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="checkout" element={<Checkout />} />
         </Route>
-       </Route>
+      </Route>
 
       <Route element={<ProtectedPage />}>
         <Route path="admin" element={<AdminLayout />}>
@@ -100,7 +101,7 @@ function App() {
           <Route path="regions" element={<Regions />} />
         </Route>
       </Route>
-      
+
     </Routes>
   )
 }
