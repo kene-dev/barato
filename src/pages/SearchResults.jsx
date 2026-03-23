@@ -18,7 +18,7 @@ function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const query = searchParams.get('q') || ''
-  
+
   const [openMenu, setOpenMenu] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const { data: categories } = useGetCategoriesQuery({ searchTerm: '' })
@@ -82,7 +82,7 @@ function SearchResults() {
     }))
   }
 
-  const hasActiveFilters = filters.category || 
+  const hasActiveFilters = filters.category ||
     filters.priceRange[0] > 0 || filters.priceRange[1] < 600000
 
   const cardAnimate = {
@@ -95,10 +95,10 @@ function SearchResults() {
   }
 
   useEffect(() => {
-    if(window.screen.width <= 820){
+    if (window.screen.width <= 820) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  },[filters.page])
+  }, [filters.page])
 
   useEffect(() => {
     const handleResize = () => {
@@ -110,7 +110,7 @@ function SearchResults() {
   }, [])
 
   return (
-    <div className='w-full min-h-screen bg-gray-50'>
+    <div className='w-full min-h-screen bg-gray-50 mt-24'>
       {/* Header Section */}
       <div className='bg-white border-b border-gray-200 py-6'>
         <div className='max-w-7xl mx-auto px-5 md:px-8 lg:px-14'>
@@ -174,16 +174,16 @@ function SearchResults() {
               <p>Categories</p>
               <p onClick={() => handleFilterChange({ category: '' })}>Reset</p>
             </div>
-            <hr className='h-[1px] bg-black/70'/>
+            <hr className='h-[1px] bg-black/70' />
             <div className='w-full flex flex-col gap-2 my-2'>
               {categories?.map((category) => (
                 <div key={category.id} className='w-full flex items-center justify-between'>
                   <p>{category.categoryName}</p>
-                  <input 
-                    onChange={() => handleFilterChange({ category: category.id })}  
-                    checked={filters.category === category.id}  
-                    type='checkbox' 
-                    className='bg-gray-200 w-4 h-4' 
+                  <input
+                    onChange={() => handleFilterChange({ category: category.id })}
+                    checked={filters.category === category.id}
+                    type='checkbox'
+                    className='bg-gray-200 w-4 h-4'
                   />
                 </div>
               ))}
@@ -194,7 +194,7 @@ function SearchResults() {
             <div className='w-full flex items-center justify-between text-primary font-semibold'>
               <p>Price Range</p>
             </div>
-            <hr className='h-[1px] bg-black/70'/>
+            <hr className='h-[1px] bg-black/70' />
             <RangeSlider min={0} max={600000} step={1} onChange={handlePriceChange} />
           </div>
         </div>
@@ -217,9 +217,9 @@ function SearchResults() {
                       variants={cardAnimate}
                       initial='offScreen'
                       whileInView="onScreen"
-                      viewport={{once: true, amount:0.1}}
-                      exit={{y:-10, opacity:0}}
-                      transition={{duration:.3, ease:"linear"}}
+                      viewport={{ once: true, amount: 0.1 }}
+                      exit={{ y: -10, opacity: 0 }}
+                      transition={{ duration: .3, ease: "linear" }}
                       key={product.id}
                       custom={index}
                       className='w-full lg:w-max sticky lg:static top-10'
@@ -273,16 +273,16 @@ function SearchResults() {
                 <p>Categories</p>
                 <p onClick={() => handleFilterChange({ category: '' })}>Reset</p>
               </div>
-              <hr className='h-[1px] bg-black/70'/>
+              <hr className='h-[1px] bg-black/70' />
               <div className='w-full flex flex-col gap-2 my-2'>
                 {categories?.map((category) => (
                   <div key={category.id} className='w-full flex items-center justify-between'>
                     <p>{category.categoryName}</p>
-                    <input 
-                      onChange={() => handleFilterChange({ category: category.id })}  
-                      checked={filters.category === category.id}  
-                      type='checkbox' 
-                      className='bg-gray-200 w-4 h-4' 
+                    <input
+                      onChange={() => handleFilterChange({ category: category.id })}
+                      checked={filters.category === category.id}
+                      type='checkbox'
+                      className='bg-gray-200 w-4 h-4'
                     />
                   </div>
                 ))}
@@ -294,7 +294,7 @@ function SearchResults() {
                 <p>Price Range</p>
                 <p className='cursor-pointer' onClick={() => handlePriceChange(0, 600000)}>Reset</p>
               </div>
-              <hr className='h-[1px] bg-black/70'/>
+              <hr className='h-[1px] bg-black/70' />
               <RangeSlider min={0} max={600000} step={10} onChange={handlePriceChange} />
             </div>
           </div>

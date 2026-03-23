@@ -35,11 +35,11 @@ const FAQ = () => {
   ]
 
   return (
-    <div className='w-full max-w-4xl mx-auto px-5 md:px-8 lg:px-14 py-10 md:py-14 2xl:px-24 2xl:py-24'>
+    <div className='w-full max-w-4xl mx-auto px-5 md:px-8 lg:px-14 py-24 lg:py-32 md:py-14 2xl:px-24 2xl:py-24'>
       <h1 className='font-bold text-3xl md:text-4xl text-center text-primary mb-4 md:mb-8'>
         Frequently Asked Questions
       </h1>
-      
+
       <p className='text-center text-base md:text-lg text-gray-600 mb-8 md:mb-12'>
         Find answers to common questions about our products and services
       </p>
@@ -47,8 +47,8 @@ const FAQ = () => {
       <div className='w-full'>
         <Accordion type="single" collapsible className="w-full space-y-3 md:space-y-4">
           {faqs.map((faq, index) => (
-            <AccordionItem 
-              key={index} 
+            <AccordionItem
+              key={index}
               value={`item-${index}`}
               className="border border-primary/20 rounded-lg px-4 md:px-6 bg-white shadow-sm hover:shadow-md hover:border-primary/40 transition-all"
             >
@@ -69,18 +69,18 @@ const FAQ = () => {
         </p>
         <p className='text-sm md:text-base text-gray-500'>
           Feel free to reach out to us via{' '}
-          <a 
-            href="https://www.instagram.com/matrix_scents" 
-            target="_blank" 
+          <a
+            href="https://www.instagram.com/matrix_scents"
+            target="_blank"
             rel="noopener noreferrer"
             className='text-primary hover:underline font-semibold'
           >
             Instagram
           </a>
           {' '}or{' '}
-          <a 
-            href="https://wa.me/2348060119051" 
-            target="_blank" 
+          <a
+            href="https://wa.me/2348060119051"
+            target="_blank"
             rel="noopener noreferrer"
             className='text-primary hover:underline font-semibold'
           >

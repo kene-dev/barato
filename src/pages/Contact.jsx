@@ -4,10 +4,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { toast } from 'react-toastify'
-import { 
-  Mail, 
-  Phone, 
-  Send, 
+import {
+  Mail,
+  Phone,
+  Send,
   MessageSquare,
   User,
   Instagram,
@@ -109,7 +109,7 @@ const Contact = () => {
   return (
     <div className='w-full min-h-screen bg-gradient-to-br from-gray-50 to-white'>
       {/* Hero Section */}
-      <div className='w-full bg-primary/5 py-12 md:py-16 lg:py-20'>
+      <div className='w-full bg-primary/5 py-24 md:py-16 lg:py-24'>
         <div className='max-w-7xl mx-auto px-5 md:px-8 lg:px-14 text-center'>
           <h1 className='font-bold text-4xl md:text-5xl lg:text-6xl text-primary mb-4'>
             Get In Touch
@@ -174,11 +174,10 @@ const Contact = () => {
                   {...register('name')}
                   type='text'
                   id='name'
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${
-                    errors.name
-                      ? 'border-red-300 focus:ring-red-500'
-                      : 'border-gray-300 focus:ring-primary focus:border-primary'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.name
+                    ? 'border-red-300 focus:ring-red-500'
+                    : 'border-gray-300 focus:ring-primary focus:border-primary'
+                    }`}
                   placeholder='John Doe'
                 />
                 {errors.name && (
@@ -196,11 +195,10 @@ const Contact = () => {
                   {...register('email')}
                   type='email'
                   id='email'
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${
-                    errors.email
-                      ? 'border-red-300 focus:ring-red-500'
-                      : 'border-gray-300 focus:ring-primary focus:border-primary'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.email
+                    ? 'border-red-300 focus:ring-red-500'
+                    : 'border-gray-300 focus:ring-primary focus:border-primary'
+                    }`}
                   placeholder='john@example.com'
                 />
                 {errors.email && (
@@ -218,11 +216,10 @@ const Contact = () => {
                   {...register('phone')}
                   type='tel'
                   id='phone'
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${
-                    errors.phone
-                      ? 'border-red-300 focus:ring-red-500'
-                      : 'border-gray-300 focus:ring-primary focus:border-primary'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.phone
+                    ? 'border-red-300 focus:ring-red-500'
+                    : 'border-gray-300 focus:ring-primary focus:border-primary'
+                    }`}
                   placeholder='+234 800 000 0000'
                 />
                 {errors.phone && (
@@ -239,11 +236,10 @@ const Contact = () => {
                   {...register('subject')}
                   type='text'
                   id='subject'
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${
-                    errors.subject
-                      ? 'border-red-300 focus:ring-red-500'
-                      : 'border-gray-300 focus:ring-primary focus:border-primary'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all ${errors.subject
+                    ? 'border-red-300 focus:ring-red-500'
+                    : 'border-gray-300 focus:ring-primary focus:border-primary'
+                    }`}
                   placeholder='What is this regarding?'
                 />
                 {errors.subject && (
@@ -260,11 +256,10 @@ const Contact = () => {
                   {...register('message')}
                   id='message'
                   rows={6}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all resize-none ${
-                    errors.message
-                      ? 'border-red-300 focus:ring-red-500'
-                      : 'border-gray-300 focus:ring-primary focus:border-primary'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all resize-none ${errors.message
+                    ? 'border-red-300 focus:ring-red-500'
+                    : 'border-gray-300 focus:ring-primary focus:border-primary'
+                    }`}
                   placeholder='Tell us how we can help you...'
                 />
                 {errors.message && (
@@ -341,7 +336,7 @@ const Contact = () => {
                 <h3 className='text-xl font-bold text-gray-800'>Quick Response</h3>
               </div>
               <p className='text-gray-600 text-sm leading-relaxed'>
-                We typically respond to all inquiries within 24 hours during business days. 
+                We typically respond to all inquiries within 24 hours during business days.
                 For urgent matters, please call us directly or reach out via WhatsApp for immediate assistance.
               </p>
             </div>

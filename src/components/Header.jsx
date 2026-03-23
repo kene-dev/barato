@@ -21,125 +21,107 @@ import { navigationLinks, Navlanguages } from '@/lib/navLinks'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { selectCartItems } from '@/app/features/cartSlice'
+import { AnimatePresence, motion } from 'framer-motion';
+import { Menu, Search, ShoppingCart } from 'lucide-react';
+import SearchModal from './SearchBar';
 
 
-function Header() {
-  const [openMenu, setOpenMenu] = useState(false)
-  const location = useLocation()
-  const { t } = useTranslation();
-  const { i18n } = useTranslation();
-  const cartLength = useSelector(selectCartItems)
+function Header({ scrollY }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const isScrolled = scrollY > 20;
 
-  const handleLanguageChange = (lang) => {
-    i18n.changeLanguage(lang);
-  };
+  const cartItems = useSelector(selectCartItems) || [];
+  const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
 
   return (
-    <div className='w-screen font-poppins' >
-       {/* first section bg-white*/}
-      <div className='bg-[#F2F2F5] h-[45px] w-full flex justify-between items-center px-10 text-[13px]'>
-        <div className='hidden lg:flex justify-center items-center gap-3 '>
-          <img src={call} alt="" />
-          <p>CALL US:</p>
-          <p>+234 806 011 9051</p>
-        </div>
-        <div className='flex justify-between items-center gap-8'>
-          <p>NGN</p>
+    <>
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-lg' : 'bg-white/95 backdrop-blur-sm'
+          }`}
+      >
+        {/* Main Header */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20 border-b-2 border-primary">
+            {/* Logo */}
+            <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
+              <img src={logo} className="lg:w-24 w-18 object-contain" />
+            </motion.div>
 
-          {/* LANGUAGES DROPDOWN */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="px-2 py-1">
-                {Navlanguages.find(l => l.value === i18n.language)?.label || 'Language'}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="min-w-[120px] shadow-lg">
-              {Navlanguages.map((item, index) => (
-                <div key={item.value}>
-                  <DropdownMenuItem
-                    onSelect={() => handleLanguageChange(item.value)}
-                    className="cursor-pointer px-4 py-2 hover:bg-gray-50"
-                  >
-                    <span className="text-sm font-medium text-black">{item.label}</span>
-                  </DropdownMenuItem>
-                  {index !== Navlanguages.length - 1 && <DropdownMenuSeparator />}
-                </div>
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-8">
+              {['Home', 'Shop', 'About', 'FAQ', 'Contact'].map((item) => (
+                <Link
+                  to={`/${item === "Home" ? '' : item.toLowerCase()}`}
+                  key={item}
+                  whileHover={{ y: -2 }}
+                  className="text-black hover:text-cyan-600 font-semibold uppercase text-sm tracking-wider transition-colors relative group"
+                >
+                  {item}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-500 group-hover:w-full transition-all duration-300" />
+                </Link>
               ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </nav>
 
-        
-        </div>
-      </div>
-
-      {/* second section bg-red */}
-      <div className="bg-primary/10 lg:h-[127px] h-[80px] w-full flex justify-between items-center px-10">
-        <div className="flex flex-col">
-          <img src={logo} className="lg:w-36 w-24 object-contain" />
-          {/* <p className="lg:text-xs text-[10px] text-primary">{t('slogan')}</p> */}
-        </div>
-
-        <div className="w-[600px] hidden lg:flex items-center justify-center">
-          <SearchBar isMobile={false} />
-        </div>
-
-        <div className="flex text-primary gap-3">
-          <div className="relative">
-            <Link to="/cart">
-              <img src={cart} alt="" className="lg:w-9 lg:h-9 w-7 h-7" />
-            </Link>
-            <p
-              data-test="cart-length"
-              className="absolute bg-primary text-white text-xs -top-3 lg:-right-2 -right-3 px-2 py-1 rounded-full border-2 border-white"
-            >
-              {cartLength.length}
-            </p>
-          </div>
-          <div className="hidden lg:flex flex-col text-sm">
-            <Link to="/cart" className="text-primary">{t('cart')}</Link>
-            <p className="text-sm text-primary/80">₦0.00 NGN</p>
+            {/* Right Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Search className="size-5" />
+              </button>
+              <Link to="/cart" className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative">
+                <ShoppingCart className="size-5" />
+                <span className="absolute -top-1 -right-1 size-5 bg-primary rounded-full text-white text-xs flex items-center justify-center">
+                  {cartCount}
+                </span>
+              </Link>
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Menu className="size-5" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.header>
 
-      {/* third section bg-tertiary */}
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'spring', damping: 25 }}
+            className="fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-2xl lg:hidden border-l-4 border-black"
+          >
+            <div className="p-6">
+              <nav className="flex flex-col gap-6 mt-16">
+                {['Home', 'Shop', 'About', 'FAQ', 'Contact'].map((item) => (
+                  <Link
+                    key={item}
+                    to={`/${item === "Home" ? '' : item.toLowerCase()}`}
+                    className="text-xl font-bold text-black hover:text-cyan-600 transition-colors uppercase tracking-wider"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <div className='w-full bg-primary h-[51px] lg:px-10 px-5 flex items-center lg:justify-normal justify-between lg:gap-30'>
-        <div className='bg-[#F2F2F5] w-[300px] hidden lg:flex items-center justify-center font-semibold text-lg h-full'>
-          ALL DEPARTMENTS
-        </div>
-
-        <div className='w-2/3 lg:hidden flex items-center justify-start'>
-          <SearchBar isMobile={true} />
-        </div>
-
-        <RiMenu3Line onClick={() => setOpenMenu(!openMenu)} className='w-7 h-7 text-white lg:hidden' />
-
-        <nav className='hidden lg:flex'>
-          <ul className='flex gap-16 text-[16px] text-white items-center justify-center font-normal'>
-            {navigationLinks.map(link => (
-              <Link  key={link.path} to={link.path}>
-                <li className={`uppercase ${location.pathname === link.path ?  'text-black font-bold' : 'text-white'}`}>{t(`${link.name}`)}</li>
-              </Link>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
-      <Sheet open={openMenu} onOpenChange={setOpenMenu} >
-        <SheetContent side='left'>
-            <ul className='w-full flex flex-col gap-6 text-[16px] text-black items-start justify-start px-5 py-5'>
-            {navigationLinks.map(link => (
-              <Link className='w-full' onClick={() => setOpenMenu(false)} key={link.path} to={link.path}>
-                <li className={`uppercase ${location.pathname === link.path ? 'text-primary font-bold w-full' : 'text-black w-full'}`}>{link.name}</li>
-              </Link>
-            ))}
-            </ul>
-        </SheetContent>
-      </Sheet>
-
-    </div>
-  )
+      {/* Search Modal */}
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+    </>
+  );
 }
 
 export default Header
