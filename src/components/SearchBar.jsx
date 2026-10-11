@@ -1,316 +1,143 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { Search, X, Clock, TrendingUp, ArrowRight } from 'lucide-react'
+import * as Dialog from '@radix-ui/react-dialog'
+import { ArrowRight, Clock3, Search, Sparkles, X } from 'lucide-react'
 import { useGetProductsQuery } from '@/app/features/api/productApiSlice'
 import useDebounce from '@/hooks/useDebounce'
-import { useTranslation } from 'react-i18next'
-import { AnimatePresence, motion } from 'framer-motion'
 
+const popularSearches = ['Perfume', 'Cologne', 'Fragrance', 'Designer scents', 'Luxury perfumes']
+
+// eslint-disable-next-line react/prop-types
 function SearchModal({ isOpen, onClose, onSearch }) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [showSuggestions, setShowSuggestions] = useState(false)
   const [searchHistory, setSearchHistory] = useState([])
-  const [popularSearches] = useState([
-    'Perfume',
-    'Cologne',
-    'Fragrance',
-    'Designer Scents',
-    'Luxury Perfumes'
-  ])
   const searchInputRef = useRef(null)
-  const suggestionsRef = useRef(null)
   const navigate = useNavigate()
-  const debouncedSearchTerm = useDebounce(searchTerm, 300)
-
-  // Fetch search suggestions
-  const { data: suggestionsData } = useGetProductsQuery({
-    searchTerm: debouncedSearchTerm,
+  const debouncedTerm = useDebounce(searchTerm.trim(), 300)
+  const { data: suggestionsData, isFetching } = useGetProductsQuery({
+    searchTerm: debouncedTerm,
     page: 1,
     pageSize: 5,
     category: '',
     region: '',
-    priceRange: [0, 600000]
-  }, {
-    skip: !debouncedSearchTerm || debouncedSearchTerm.length < 2
-  })
+    priceRange: [0, 600000],
+  }, { skip: debouncedTerm.length < 2 })
 
-  // Load search history from localStorage
   useEffect(() => {
-    const history = localStorage.getItem('searchHistory')
-    if (history) {
-      setSearchHistory(JSON.parse(history))
+    try {
+      const saved = JSON.parse(localStorage.getItem('searchHistory') || '[]')
+      if (Array.isArray(saved)) setSearchHistory(saved.filter(item => typeof item === 'string').slice(0, 5))
+    } catch {
+      setSearchHistory([])
     }
   }, [])
 
-  // Save search to history
-  const saveToHistory = (term) => {
-    if (!term.trim()) return
-
-    const updatedHistory = [
-      term,
-      ...searchHistory.filter(item => item.toLowerCase() !== term.toLowerCase())
-    ].slice(0, 5) // Keep only last 5 searches
-
-    setSearchHistory(updatedHistory)
-    localStorage.setItem('searchHistory', JSON.stringify(updatedHistory))
+  const saveToHistory = term => {
+    const updated = [term, ...searchHistory.filter(item => item.toLowerCase() !== term.toLowerCase())].slice(0, 5)
+    setSearchHistory(updated)
+    localStorage.setItem('searchHistory', JSON.stringify(updated))
   }
 
-  // Remove from history
-  const removeFromHistory = (term, e) => {
-    e.stopPropagation()
-    const updatedHistory = searchHistory.filter(item => item !== term)
-    setSearchHistory(updatedHistory)
-    localStorage.setItem('searchHistory', JSON.stringify(updatedHistory))
+  const removeFromHistory = term => {
+    const updated = searchHistory.filter(item => item !== term)
+    setSearchHistory(updated)
+    localStorage.setItem('searchHistory', JSON.stringify(updated))
   }
 
-  // Handle search submission
-  const handleSearch = (term = searchTerm) => {
-    if (!term.trim()) return
-
-    saveToHistory(term)
-    setShowSuggestions(false)
-
-    if (onSearch) {
-      onSearch(term)
-    } else {
-      navigate(`/search?q=${encodeURIComponent(term)}`)
-    }
-
-    if (searchInputRef.current) {
-      searchInputRef.current.blur()
-    }
-
+  const closeModal = () => {
+    setSearchTerm('')
     onClose()
   }
 
-  // Handle input change
-  const handleInputChange = (e) => {
-    const value = e.target.value
-    setSearchTerm(value)
-    setShowSuggestions(value.length > 0 || searchHistory.length > 0 || popularSearches.length > 0)
+  const handleSearch = (term = searchTerm) => {
+    const cleanTerm = term.trim()
+    if (!cleanTerm) return
+    saveToHistory(cleanTerm)
+    if (onSearch) onSearch(cleanTerm)
+    else navigate(`/search?q=${encodeURIComponent(cleanTerm)}`)
+    closeModal()
   }
-
-  // Handle key press
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch()
-    } else if (e.key === 'Escape') {
-      setShowSuggestions(false)
-      if (searchInputRef.current) {
-        searchInputRef.current.blur()
-      }
-    }
-  }
-
-  // Close suggestions when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        suggestionsRef.current &&
-        !suggestionsRef.current.contains(event.target) &&
-        searchInputRef.current &&
-        !searchInputRef.current.contains(event.target)
-      ) {
-        setShowSuggestions(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
 
   const suggestions = suggestionsData?.products || []
-  const hasResults = suggestions.length > 0
-  const showHistory = searchTerm.length === 0 && searchHistory.length > 0
-  const showPopular = searchTerm.length === 0 && searchHistory.length === 0
-
+  const hasQuery = searchTerm.trim().length >= 2
+  const isSearching = isFetching || debouncedTerm !== searchTerm.trim()
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
-          />
-
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ type: 'spring', damping: 25 }}
-            className="fixed top-20 left-1/2 -translate-x-1/2 w-full max-w-2xl z-50 px-4"
-          >
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
-              {/* Header & Input */}
-              <div className="p-6 border-b border-gray-100">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold">Search Products</h3>
-                  <button
-                    onClick={onClose}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <X className="size-5" />
-                  </button>
-                </div>
-
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-gray-400" />
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    placeholder="Search for perfumes, brands, or categories..."
-                    value={searchTerm}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyPress}
-                    onFocus={() => setShowSuggestions(true)}
-                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-cyan-500 transition-colors"
-                    autoFocus
-                  />
-                </div>
+    <Dialog.Root open={isOpen} onOpenChange={open => { if (!open) closeModal() }}>
+      <Dialog.Portal>
+        <Dialog.Overlay className='fixed inset-0 z-[60] bg-[#211a18]/70 backdrop-blur-sm' />
+        <Dialog.Content
+          onOpenAutoFocus={event => { event.preventDefault(); searchInputRef.current?.focus() }}
+          className='fixed top-4 left-1/2 z-[61] flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[760px] -translate-x-1/2 flex-col overflow-hidden border border-[#d9c8b7] bg-[#faf7f2] text-[#30251f] shadow-[14px_14px_0_#211a1880] focus:outline-none sm:top-8 sm:max-h-[calc(100dvh-4rem)]'
+        >
+          <div className='shrink-0 border-b border-[#dfd2c5] px-5 pt-6 pb-5 sm:px-8 sm:pt-8 sm:pb-7'>
+            <div className='flex items-start justify-between gap-4'>
+              <div>
+                <p className='mb-2 text-[10px] font-semibold uppercase tracking-[.23em] text-[#a33075]'>Explore Matrix Scents</p>
+                <Dialog.Title className="text-3xl leading-tight font-normal tracking-[-.05em] sm:text-4xl [font-family:Georgia,'Times_New_Roman',serif]">Find your next scent.</Dialog.Title>
+                <Dialog.Description className='mt-1 text-xs leading-5 text-[#796a5e] sm:text-sm'>Search the collection by scent, brand, or name.</Dialog.Description>
               </div>
-
-              {/* Integrated Content Area */}
-              <div
-                ref={suggestionsRef}
-                className="flex-1 overflow-y-auto p-4 custom-scrollbar"
-              >
-                {searchTerm.length >= 2 ? (
-                  <>
-                    {/* Search Results */}
-                    {hasResults ? (
-                      <div className="space-y-4">
-                        <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                          Products ({suggestions.length})
-                        </div>
-                        <div className="grid gap-2">
-                          {suggestions.map((product) => (
-                            <div
-                              key={product.id}
-                              onClick={() => {
-                                navigate(`/shop/${product.id}`)
-                                onClose()
-                              }}
-                              className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-2xl cursor-pointer transition-all group"
-                            >
-                              <div className="size-16 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
-                                <img
-                                  src={product.productThumbnail || product.productImage || 'https://via.placeholder.com/150'}
-                                  alt={product.productName}
-                                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold text-gray-900 group-hover:text-cyan-600 transition-colors truncate">
-                                  {product.productName}
-                                </p>
-                                <p className="text-xs text-gray-500 line-clamp-1 mb-1">
-                                  {product.productDescription}
-                                </p>
-                                <p className="text-sm font-bold text-cyan-600">
-                                  ₦{product.productPrice?.toLocaleString()}
-                                </p>
-                              </div>
-                              <ArrowRight className="size-4 text-gray-300 group-hover:text-cyan-600 group-hover:translate-x-1 transition-all" />
-                            </div>
-                          ))}
-                        </div>
-                        {suggestions.length >= 5 && (
-                          <button
-                            onClick={() => handleSearch()}
-                            className="w-full py-4 mt-2 text-sm text-cyan-600 font-bold hover:bg-cyan-50 rounded-2xl transition-colors text-center"
-                          >
-                            View all results →
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="py-12 text-center">
-                        <div className="inline-flex items-center justify-center size-16 bg-gray-50 rounded-full mb-4">
-                          <Search className="size-8 text-gray-300" />
-                        </div>
-                        <p className="text-gray-500 font-medium">No products found for &quot;{searchTerm}&quot;</p>
-                        <button
-                          onClick={() => handleSearch()}
-                          className="mt-4 text-sm text-cyan-600 font-bold hover:underline"
-                        >
-                          Search anyway
-                        </button>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="space-y-8 p-2">
-                    {/* Search History */}
-                    {searchHistory.length > 0 && (
-                      <div>
-                        <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2 mb-2">
-                          <Clock className="size-3" />
-                          Recent Searches
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {searchHistory.map((term, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-full cursor-pointer transition-colors group"
-                            >
-                              <span
-                                onClick={() => {
-                                  setSearchTerm(term)
-                                  handleSearch(term)
-                                }}
-                                className="text-sm text-gray-700"
-                              >
-                                {term}
-                              </span>
-                              <button
-                                onClick={(e) => removeFromHistory(term, e)}
-                                className="opacity-40 hover:opacity-100 hover:text-red-500 transition-all"
-                              >
-                                <X className="size-3" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Popular Searches */}
-                    <div>
-                      <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2 mb-2">
-                        <TrendingUp className="size-3" />
-                        Popular Searches
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {popularSearches.map((term, index) => (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              setSearchTerm(term)
-                              handleSearch(term)
-                            }}
-                            className="px-4 py-2 text-sm bg-gray-50 hover:bg-cyan-500 hover:text-white text-gray-700 rounded-full transition-all"
-                          >
-                            {term}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <Dialog.Close asChild><button type='button' aria-label='Close search' className='grid size-9 shrink-0 place-items-center border border-[#d9c8b7] transition-colors hover:bg-[#eee5db] focus-visible:outline-2 focus-visible:outline-[#a33075]'><X size={18} /></button></Dialog.Close>
             </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
-  );
+
+            <form onSubmit={event => { event.preventDefault(); handleSearch() }} className='mt-6 flex min-w-0 border border-[#bba99a] bg-white focus-within:border-[#a33075] focus-within:ring-1 focus-within:ring-[#a33075]'>
+              <Search size={20} strokeWidth={1.6} aria-hidden='true' className='my-auto ml-4 shrink-0 text-[#8f7e70]' />
+              <input ref={searchInputRef} type='search' value={searchTerm} onChange={event => setSearchTerm(event.target.value)} placeholder='Perfume, brand, or a name you love' aria-label='Search products' className='min-h-13 min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-[#9c8d80] sm:px-4 sm:text-base' />
+              <button type='submit' disabled={!searchTerm.trim()} aria-label='View search results' className='grid w-13 shrink-0 place-items-center bg-[#30251f] text-white transition-colors hover:bg-[#a33075] disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto sm:px-5'><ArrowRight size={19} aria-hidden='true' /><span className='sr-only'>Search</span></button>
+            </form>
+          </div>
+
+          <div className='min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-8 sm:py-7'>
+            {hasQuery ? (
+              <div>
+                <div className='mb-3 flex items-center justify-between gap-3'>
+                  <p className='text-[11px] font-semibold uppercase tracking-[.17em] text-[#8b7267]'>Matching products</p>
+                  <span className='text-xs text-[#8b7267]'>{isSearching ? 'Searching…' : `${suggestions.length} shown`}</span>
+                </div>
+                {isSearching ? <p role='status' className='border-t border-[#e3d8cc] py-10 text-sm text-[#796a5e]'>Looking through the collection…</p> : suggestions.length > 0 ? (
+                  <div className='border-t border-[#e3d8cc]'>
+                    {suggestions.map(product => (
+                      <button key={product.id} type='button' onClick={() => { navigate(`/shop/${product.id}`); closeModal() }} className='group flex min-h-22 w-full items-center gap-4 border-b border-[#e3d8cc] py-3 text-left transition-colors hover:bg-[#f2eae1] focus-visible:outline-2 focus-visible:outline-[#a33075]'>
+                        <span className='size-16 shrink-0 overflow-hidden bg-[#ece2d7] sm:size-18'>
+                          {product.productThumbnail || product.productImage ? <img src={product.productThumbnail || product.productImage} alt='' className='size-full object-cover transition-transform duration-300 group-hover:scale-105' /> : <span className='grid size-full place-items-center text-xl text-[#a33075] [font-family:Georgia,serif]'>M</span>}
+                        </span>
+                        <span className='min-w-0 flex-1'>
+                          <span className="block truncate text-[17px] leading-tight tracking-[-.025em] [font-family:Georgia,'Times_New_Roman',serif]">{product.productName}</span>
+                          <span className='mt-1 block truncate text-xs text-[#796a5e]'>{product.productDescription}</span>
+                          <span className='mt-1 block text-xs font-semibold text-[#a33075]'>₦{Number(product.productPrice).toLocaleString('en-NG')}</span>
+                        </span>
+                        <ArrowRight size={17} className='mr-1 shrink-0 text-[#a33075] transition-transform group-hover:translate-x-1' aria-hidden='true' />
+                      </button>
+                    ))}
+                  </div>
+                ) : <div className='border-t border-[#e3d8cc] py-9'><p className="text-2xl tracking-[-.04em] [font-family:Georgia,'Times_New_Roman',serif]">No scent by that name yet.</p><p className='mt-2 text-sm leading-6 text-[#796a5e]'>Try another name, or see the full search results.</p></div>}
+                <button type='button' onClick={() => handleSearch()} className='mt-5 inline-flex min-h-11 items-center gap-2 border border-[#30251f] px-5 text-xs font-semibold uppercase tracking-[.08em] transition-colors hover:bg-[#30251f] hover:text-white'>View all results <ArrowRight size={15} aria-hidden='true' /></button>
+              </div>
+            ) : (
+              <div className='grid gap-7 sm:grid-cols-2 sm:gap-8'>
+                {searchHistory.length > 0 && <section>
+                  <h3 className='mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[.17em] text-[#8b7267]'><Clock3 size={15} aria-hidden='true' /> Recent searches</h3>
+                  <div className='border-t border-[#e3d8cc]'>
+                    {searchHistory.map(term => <div key={term} className='flex items-center border-b border-[#e3d8cc]'>
+                      <button type='button' onClick={() => handleSearch(term)} className='min-h-11 min-w-0 flex-1 truncate text-left text-sm transition-colors hover:text-[#a33075]'>{term}</button>
+                      <button type='button' onClick={() => removeFromHistory(term)} aria-label={`Remove ${term} from recent searches`} className='grid size-9 shrink-0 place-items-center text-[#9c8d80] transition-colors hover:text-[#a33075]'><X size={15} /></button>
+                    </div>)}
+                  </div>
+                </section>}
+                <section className={searchHistory.length ? '' : 'sm:col-span-2'}>
+                  <h3 className='mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[.17em] text-[#8b7267]'><Sparkles size={15} aria-hidden='true' /> Start somewhere</h3>
+                  <div className='flex flex-wrap gap-2'>
+                    {popularSearches.map(term => <button key={term} type='button' onClick={() => handleSearch(term)} className='min-h-10 border border-[#d8c9ba] bg-[#f5eee7] px-3 text-xs font-medium transition-colors hover:border-[#a33075] hover:bg-[#f5e4ed] hover:text-[#8f215f]'>{term}</button>)}
+                  </div>
+                </section>
+              </div>
+            )}
+          </div>
+          <div className='h-1 shrink-0 bg-[#a33075]' aria-hidden='true' />
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  )
 }
 
 export default SearchModal
-

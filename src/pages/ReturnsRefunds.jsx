@@ -1,13 +1,14 @@
-import React from 'react'
+import PageIntro from '@/components/PageIntro'
 
 const ReturnsRefunds = () => {
   return (
-    <div className='w-full max-w-4xl mx-auto px-8 py-10 md:px-14 md:py-14'>
-        <h1 className='font-bold text-3xl md:text-4xl text-center text-primary mb-8'>Return and Refund Policy</h1>
+    <main className='min-h-screen bg-[#f9f6f1] text-[#30251f]'>
+        <PageIntro eyebrow='Shop with confidence / Policies' title='Returns & refunds.' description='The important details, clearly explained.' />
+        <div className='mx-auto max-w-4xl px-5 py-14 sm:px-8 sm:py-20'>
         
-        <div className='flex flex-col gap-8 text-base leading-relaxed'>
+        <div className='flex flex-col gap-10 text-sm leading-7 text-[#62564e] sm:text-base sm:leading-8 [&_section]:border-b [&_section]:border-[#e2d6c9] [&_section]:pb-10'>
             <section>
-                <h2 className='text-2xl font-semibold text-primary mb-4'>1. Eligibility for Return or Refund</h2>
+                <h2 className="mb-5 text-2xl leading-tight tracking-[-.03em] text-[#30251f] sm:text-3xl [font-family:Georgia,'Times_New_Roman',serif]">1. Eligibility for Return or Refund</h2>
                 <p className='mb-4'>
                     You may request a return or refund within <strong>24 hours</strong> of receiving your order if any of the following applies:
                 </p>
@@ -16,13 +17,13 @@ const ReturnsRefunds = () => {
                     <li>The perfume arrived damaged.</li>
                     <li>You received a defective atomizer or broken bottle.</li>
                 </ul>
-                <p className='bg-primary/10 p-4 rounded-md italic'>
+                <p className='border-l-4 border-[#f83dbe] bg-white p-5 italic'>
                     For hygiene and authenticity reasons, we do not accept returns or refunds on perfumes that have been opened, sprayed, or used, unless the issue falls into one of the categories above.
                 </p>
             </section>
 
             <section>
-                <h2 className='text-2xl font-semibold text-primary mb-4'>2. Non-Returnable Items</h2>
+                <h2 className="mb-5 text-2xl leading-tight tracking-[-.03em] text-[#30251f] sm:text-3xl [font-family:Georgia,'Times_New_Roman',serif]">2. Non-Returnable Items</h2>
                 <p className='mb-4'>
                     To maintain safety and product integrity, the following items cannot be returned or refunded:
                 </p>
@@ -33,9 +34,9 @@ const ReturnsRefunds = () => {
             </section>
 
             <section>
-                <h2 className='text-2xl font-semibold text-primary mb-4'>3. Return Process</h2>
+                <h2 className="mb-5 text-2xl leading-tight tracking-[-.03em] text-[#30251f] sm:text-3xl [font-family:Georgia,'Times_New_Roman',serif]">3. Return Process</h2>
                 <p className='mb-4'>
-                    If your order meets the above conditions, here's how to initiate a return:
+                    If your order meets the above conditions, here&apos;s how to initiate a return:
                 </p>
                 <ol className='list-decimal pl-6 space-y-3'>
                     <li>
@@ -43,13 +44,13 @@ const ReturnsRefunds = () => {
                         <div className='mt-2 space-y-1'>
                             <p className='flex items-center gap-2'>
                                 <span>📧</span>
-                                <a href='mailto:matrixscents@gmail.com' className='text-primary underline hover:no-underline'>
+                                <a href='mailto:matrixscents@gmail.com' className='text-[#a33075] underline hover:no-underline'>
                                     matrixscents@gmail.com
                                 </a>
                             </p>
                             <p className='flex items-center gap-2'>
                                 <span>📱</span>
-                                <a href='https://wa.me/2348060119051' className='text-primary underline hover:no-underline' target='_blank' rel='noopener noreferrer'>
+                                <a href='https://wa.me/2348060119051' className='text-[#a33075] underline hover:no-underline' target='_blank' rel='noopener noreferrer'>
                                     +234 08060119051
                                 </a>
                             </p>
@@ -62,7 +63,7 @@ const ReturnsRefunds = () => {
                         Our support team will review and approve eligible returns.
                     </li>
                     <li>
-                        You'll receive instructions and a return address.
+                        You&apos;ll receive instructions and a return address.
                     </li>
                     <li>
                         Once the returned item is received and inspected, your refund or replacement will be processed within <strong>5–7 business days</strong>.
@@ -71,7 +72,7 @@ const ReturnsRefunds = () => {
             </section>
 
             <section>
-                <h2 className='text-2xl font-semibold text-primary mb-4'>4. Refund & Exchange Options</h2>
+                <h2 className="mb-5 text-2xl leading-tight tracking-[-.03em] text-[#30251f] sm:text-3xl [font-family:Georgia,'Times_New_Roman',serif]">4. Refund & Exchange Options</h2>
                 <p className='mb-4'>
                     After inspection, you may choose:
                 </p>
@@ -80,13 +81,13 @@ const ReturnsRefunds = () => {
                     <li>A replacement perfume (same or similar fragrance, subject to availability)</li>
                     <li>Store credit (usable on your next purchase)</li>
                 </ul>
-                <p className='bg-primary/10 p-4 rounded-md italic'>
+                <p className='border-l-4 border-[#f83dbe] bg-white p-5 italic'>
                     Refunds will not include original delivery fees unless the error was from our end (e.g., wrong or damaged item).
                 </p>
             </section>
 
             <section>
-                <h2 className='text-2xl font-semibold text-primary mb-4'>5. Return Shipping Costs</h2>
+                <h2 className="mb-5 text-2xl leading-tight tracking-[-.03em] text-[#30251f] sm:text-3xl [font-family:Georgia,'Times_New_Roman',serif]">5. Return Shipping Costs</h2>
                 <ul className='list-disc pl-6 space-y-2'>
                     <li>
                         For wrong or damaged items, <strong>Matrix Scents will cover the cost of return shipping</strong>.
@@ -98,14 +99,14 @@ const ReturnsRefunds = () => {
             </section>
 
             <section>
-                <h2 className='text-2xl font-semibold text-primary mb-4'>6. Product Authenticity Assurance</h2>
-                <p className='bg-primary/10 p-4 rounded-md'>
+                <h2 className="mb-5 text-2xl leading-tight tracking-[-.03em] text-[#30251f] sm:text-3xl [font-family:Georgia,'Times_New_Roman',serif]">6. Product Authenticity Assurance</h2>
+                <p className='border-l-4 border-[#f83dbe] bg-white p-5'>
                     All Matrix Scents perfumes are <strong>100% authentic</strong>, sourced directly from trusted suppliers. Unboxed perfumes may come without original retail boxes but contain the exact same fragrance found in boxed versions.
                 </p>
             </section>
 
             <section>
-                <h2 className='text-2xl font-semibold text-primary mb-4'>7. Final Notes</h2>
+                <h2 className="mb-5 text-2xl leading-tight tracking-[-.03em] text-[#30251f] sm:text-3xl [font-family:Georgia,'Times_New_Roman',serif]">7. Final Notes</h2>
                 <ul className='list-disc pl-6 space-y-2'>
                     <li>Refunds or replacements will be processed only after we receive and inspect the returned item.</li>
                     <li>Items returned without prior approval may be rejected or sent back to the customer.</li>
@@ -113,15 +114,15 @@ const ReturnsRefunds = () => {
                 </ul>
             </section>
 
-            <div className='border-t-2 border-primary/30 pt-8 mt-8'>
-                <p className='text-center text-lg text-primary font-semibold'>
+            <div className='pt-4'>
+                <p className="text-2xl text-[#a33075] [font-family:Georgia,'Times_New_Roman',serif]">
                     Thank you for shopping with Matrix Scents!
                 </p>
             </div>
         </div>
-    </div>
+        </div>
+    </main>
   )
 }
 
 export default ReturnsRefunds
-

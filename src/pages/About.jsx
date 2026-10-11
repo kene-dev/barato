@@ -1,56 +1,36 @@
-import React from 'react'
-import logo from '../assets/logo.png'
+import { Link } from 'react-router'
+import { ArrowUpRight } from 'lucide-react'
+import editorialImage from '../assets/shop-editorial.jpg'
 
 function About() {
-    return (
-        <div className='w-full max-w-4xl mx-auto flex flex-col justify-center items-center px-8 py-10 md:px-14 md:py-14 2xl:px-24 2xl:py-24 gap-8 mt-14'>
-            <h1 className='font-bold text-3xl md:text-4xl text-center text-primary'>Our Story — Why We Started Matrix Scents</h1>
-
-            <img src={logo} alt="Matrix Scents Logo" className='my-4 w-48' />
-
-            <div className='flex flex-col gap-6 text-center md:text-left'>
-                <p className='text-lg leading-relaxed'>
-                    Matrix Scents started from a simple truth — <strong>everyone deserves to smell expensive, even if they're shopping on a budget</strong>.
-                </p>
-
-                <p className='text-base leading-relaxed'>
-                    We saw how so many perfume lovers admired designer scents from afar, saving screenshots, adding to wishlists, and saying, "One day."
-                </p>
-
-                <p className='text-base leading-relaxed'>
-                    But we also noticed something else — the price wasn't always about the perfume itself, it was about the box, the packaging, the presentation.
-                </p>
-
-                <p className='text-lg font-semibold text-primary my-2'>
-                    So we asked ourselves a question:
-                </p>
-
-                <p className='text-xl font-bold text-primary italic'>
-                    What if we removed the box, but kept the beauty?
-                </p>
-
-                <p className='text-base leading-relaxed'>
-                    That's how Matrix Scents was born — to make luxury scents accessible without the luxury price tag.
-                </p>
-
-                <p className='text-base leading-relaxed'>
-                    Every unboxed perfume we sell is 100% authentic, carefully sourced, and handled with love. We're not here to sell fakes or imitations — we're here to make sure that the scent you love doesn't have to wait till payday.
-                </p>
-
-                <p className='text-lg font-semibold my-4'>
-                    For us, it's more than perfume.
-                </p>
-
-                <p className='text-base leading-relaxed'>
-                    It's about <strong className='text-primary'>confidence made affordable</strong>, <strong className='text-primary'>luxury made simple</strong>, and <strong className='text-primary'>trust made possible</strong>.
-                </p>
-
-                <div className='text-2xl font-bold text-primary text-center mt-8 py-6 border-t-2 border-primary/30'>
-                    Matrix Scents — luxury scents within reach
-                </div>
-            </div>
+  return (
+    <main className="bg-[#f9f6f1] pt-20 text-[#30251f]">
+      <section className="mx-auto grid max-w-[1450px] lg:min-h-[510px] lg:grid-cols-2">
+        <div className="flex flex-col justify-center px-5 py-16 sm:px-8 lg:px-14">
+          <p className="mb-5 text-[11px] font-semibold tracking-[.22em] uppercase text-[#a33075]">Our story / Matrix Scents</p>
+          <h1 className="max-w-xl text-[clamp(3rem,6vw,5.7rem)] leading-[.95] tracking-[-.06em] [font-family:Georgia,'Times_New_Roman',serif]">The beauty is in the scent.</h1>
+          <p className="mt-7 max-w-lg text-base leading-8 text-[#685b51]">We started Matrix Scents with a simple belief: everyone deserves to smell expensive, even when shopping on a budget.</p>
         </div>
-    )
+        <div className="min-h-[310px] overflow-hidden bg-[#e8dbce] sm:min-h-[420px] lg:min-h-full">
+          <img src={editorialImage} alt="An amber fragrance bottle with a burgundy flower" className="h-full w-full object-cover object-[66%_center]" />
+        </div>
+      </section>
+      <section className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[1fr_1.7fr] lg:gap-20 lg:py-28">
+        <div>
+          <p className="mb-4 text-[11px] font-semibold tracking-[.2em] uppercase text-[#a33075]">Why we began</p>
+          <h2 className="text-4xl leading-[1.05] tracking-[-.05em] sm:text-5xl [font-family:Georgia,'Times_New_Roman',serif]">Luxury scents within reach.</h2>
+        </div>
+        <div className="space-y-6 text-base leading-8 text-[#62564e]">
+          <p>We saw perfume lovers admiring designer scents from afar, saving screenshots, adding to wishlists, and saying, “One day.”</p>
+          <p>But the price was not always about the perfume itself. Sometimes, it was about the box, the packaging, and the presentation.</p>
+          <blockquote className="border-l-4 border-[#f83dbe] py-3 pl-6 text-2xl leading-snug text-[#30251f] sm:text-3xl [font-family:Georgia,'Times_New_Roman',serif]">What if we removed the box, but kept the beauty?</blockquote>
+          <p>That is how Matrix Scents was born: to make luxury fragrances accessible without the luxury price tag. Every unboxed perfume we sell is carefully sourced and handled with care.</p>
+          <p>For us, it is about confidence made affordable, luxury made simple, and trust made possible.</p>
+          <Link to="/shop" className="inline-flex items-center gap-3 border-b border-[#30251f] pb-1 text-sm font-semibold text-[#30251f] hover:text-[#a33075] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a33075]">Explore the collection <ArrowUpRight size={18} /></Link>
+        </div>
+      </section>
+    </main>
+  )
 }
 
 export default About

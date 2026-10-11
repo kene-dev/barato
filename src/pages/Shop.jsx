@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
-import shopBanner from '../assets/shop-banner.jpg';
+import shopBanner from '../assets/shop-editorial.jpg';
 import ProductCard from '@/components/ProductCard';
 import { IoFilter } from "react-icons/io5";
-import RangeSlider from '@/components/RangeSlider';
+import CatalogFilters from '@/components/CatalogFilters';
 import { useGetCategoriesQuery } from '@/app/features/api/categoriesApiSlice';
 import { useGetProductsQuery } from '@/app/features/api/productApiSlice';
 import useDebounce from '@/hooks/useDebounce';
@@ -18,7 +18,6 @@ import {
 
 
 function Shop() {
-  const [cat, setCat] = useState(null)
   const [openMenu, setOpenMenu] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const { data: categories } = useGetCategoriesQuery({ searchTerm: '' })
@@ -35,7 +34,8 @@ function Shop() {
     priceRange: [0, 600000]
   });
 
-  const { data } = useGetProductsQuery(filters)
+  const { data, isLoading, isError } = useGetProductsQuery(filters)
+  const activeFilterCount = Number(Boolean(filters.category)) + Number(Boolean(filters.region)) + Number(filters.priceRange[0] > 0 || filters.priceRange[1] < 600000)
 
   const handleFilterChange = (newFilters) => {
     setFilters(prev => ({
@@ -69,17 +69,19 @@ function Shop() {
   };
 
   const cardAnimate = {
-    offScreen: { y: 10, opacity: 0 },
+    offScreen: { x: 10, opacity: 0 },
     onScreen: (i) => ({
-      y: 0,
+      x: 0,
       opacity: 1,
       transition: { duration: 1.5, type: "spring", delay: i * 0.3 },
     }),
   };
 
   useEffect(() => {
-    if (window.screen.width <= 820) {
+    if (window.screen.width <= 800) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }else{
+       window.scrollTo({ top: 400, behavior: 'smooth' });
     }
   }, [filters.page])
 
@@ -100,127 +102,61 @@ function Shop() {
 
 
   return (
-    <div className='w-full h-full overflow-y-scroll mt-14'>
-      <div className='lg:w-[60%] mx-auto px-5'>
-        <img src={shopBanner} className='my-10 mb-20' />
+    <div className='w-full min-h-screen bg-[#f9f6f1] pt-20'>
+      <div className='mx-auto max-w-[1450px] px-5 pt-7 pb-12 sm:pt-10 sm:pb-16 lg:px-10'>
+        <section className='relative isolate flex min-h-[290px] items-center overflow-hidden border border-[#e7dfd5] bg-[#f3e4d2] sm:min-h-[350px] lg:min-h-[390px]' aria-labelledby='shop-heading'>
+          <img src={shopBanner} alt='An amber fragrance bottle with a burgundy flower on a warm stone surface' className='absolute inset-0 h-full w-full object-cover object-[62%_center] sm:object-center' fetchPriority='high' />
+          <div className='absolute inset-0 bg-gradient-to-r from-[#f5e8d9]/95 via-[#f5e8d9]/75 to-transparent sm:from-[#f5e8d9]/90 sm:via-[#f5e8d9]/30' />
+          <div className='relative max-w-[440px] px-6 py-10 text-[#30251f] sm:px-10 lg:px-16'>
+            <p className='mb-4 text-[11px] font-semibold tracking-[.25em] uppercase text-[#a33075]'>The Matrix Scents edit</p>
+            <h1 id='shop-heading' className="text-5xl leading-[.95] tracking-[-.055em] sm:text-6xl lg:text-7xl [font-family:Georgia,'Times_New_Roman',serif]">Find your next favourite.</h1>
+            <p className='mt-5 max-w-[300px] text-sm leading-6 sm:text-base'>Scents and little luxuries worth making room for.</p>
+          </div>
+        </section>
       </div>
 
       {/* PRODUCTS AREA */}
-      <div className='w-full lg:h-screen 2xl:w-[80%] mx-auto flex items-start gap-5 lg:px-10'>
-        {/*  WEB SCREEN FILTER AREA */}
-        <div className='lg:w-[441px] hidden lg:flex flex-col p-3 capitalize'>
-          <h1 className='text-primary font-semibold'>Filters</h1>
-          <div className='w-full my-2'>
+      <div className='mx-auto flex w-full max-w-[1450px] items-start gap-7 px-5 pb-16 lg:px-10'>
+        <CatalogFilters
+          categories={categories || []}
+          regions={regions || []}
+          filters={filters}
+          onChange={handleFilterChange}
+          onPriceChange={handlePriceChange}
+          onClearAll={() => handleFilterChange({ category: '', region: '', priceRange: [0, 600000] })}
+        />
 
-            <div className='w-full flex items-center justify-between text-primary font-semibold'>
-              <p>Categories</p>
-              <p onClick={() => handleFilterChange({ category: '' })}>Reset</p>
-            </div>
-
-            <hr className='h-[1px] bg-black/70' />
-
-            <div className='w-full flex flex-col gap-2 my-2'>
-              {categories?.map((category) => (
-                <div key={category.id} className='w-full flex items-center justify-between'>
-                  <p>{category.categoryName}</p>
-                  <input onChange={() => handleFilterChange({ category: category.id })} checked={filters.category === category.id} type='checkbox' className='bg-gray-200 w-4 h-4' />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className='w-full my-5 h-[300px] overflow-y-scroll'>
-            <div className='w-full flex items-center justify-between text-primary font-semibold'>
-              <p>Brands</p>
-              <p onClick={() => handleFilterChange({ region: '' })}>Reset</p>
-            </div>
-            <hr className='h-[1px] bg-black/70' />
-            <div className='w-full flex flex-col gap-2 my-2'>
-              {regions?.map((region) => (
-                <div key={region.id} className='w-full flex items-center justify-between'>
-                  <p>{region.regionName}</p>
-                  <input onChange={() => handleFilterChange({ region: region.id })} checked={filters.region === region.id} type='checkbox' className=' bg-gray-200 w-4 h-4' />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className='w-full my-5'>
-            <div className='w-full flex items-center justify-between text-primary font-semibold'>
-              <p>Price Range</p>
-              {/* <p className='cursor-pointer' onClick={() => handlePriceChange(0, 1000)}>Reset</p> */}
-            </div>
-            <hr className='h-[1px] bg-black/70' />
-            <RangeSlider min={0} max={600000} step={1} onChange={handlePriceChange} />
-          </div>
-        </div>
-
-
-
-        {/*  MOBILE SCREEN FILTER AREA */}
-        <Sheet open={openMenu} onOpenChange={setOpenMenu} >
-          <SheetContent side='left'>
-            <div className='p-3'>
-              <h1>Filters</h1>
-              <div className='w-full my-2'>
-
-                <div className='w-full flex items-center justify-between text-primary font-semibold'>
-                  <p>Categories</p>
-                  <p onClick={() => handleFilterChange({ category: '' })}>Reset</p>
-                </div>
-
-                <hr className='h-[1px] bg-black/70' />
-
-                <div className='w-full flex flex-col gap-2 my-2'>
-                  {categories?.map((category) => (
-                    <div key={category.id} className='w-full flex items-center justify-between'>
-                      <p>{category.categoryName}</p>
-                      <input onChange={() => handleFilterChange({ category: category.id })} checked={filters.category === category.id} type='checkbox' className='bg-gray-200 w-4 h-4' />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className='w-full h-[300px] overflow-y-scroll my-5'>
-                <div className='w-full flex items-center justify-between text-primary font-semibold'>
-                  <p>Brands</p>
-                  <p onClick={() => handleFilterChange({ region: '' })}>Reset</p>
-                </div>
-                <hr className='h-[1px] bg-black/70' />
-                <div className='w-full flex flex-col gap-2 my-2'>
-
-                  {regions?.map((region) => (
-                    <div key={region.id} className='w-full flex items-center justify-between'>
-                      <p>{region.regionName}</p>
-                      <input onChange={() => handleFilterChange({ region: region.id })} checked={filters.region === region.id} type='checkbox' className=' bg-gray-200 w-4 h-4' />
-                    </div>
-                  ))}
-
-                </div>
-              </div>
-
-              <div className='w-full my-5'>
-                <div className='w-full flex items-center justify-between text-primary font-semibold'>
-                  <p>Price Range</p>
-                  <p className='cursor-pointer' onClick={() => handlePriceChange(0, 1000)}>Reset</p>
-                </div>
-                <hr className='h-[1px] bg-black/70' />
-                <RangeSlider min={0} max={600000} step={10} onChange={handlePriceChange} />
-              </div>
-            </div>
+        <Sheet open={openMenu} onOpenChange={setOpenMenu}>
+          <SheetContent side='left' className='w-[min(92vw,380px)] border-[#e4d8ca] p-0 sm:max-w-[380px]'>
+            <CatalogFilters
+              mobile
+              categories={categories || []}
+              regions={regions || []}
+              filters={filters}
+              onChange={handleFilterChange}
+              onPriceChange={handlePriceChange}
+              onClearAll={() => handleFilterChange({ category: '', region: '', priceRange: [0, 600000] })}
+              onDone={() => setOpenMenu(false)}
+            />
           </SheetContent>
         </Sheet>
 
-
         {/* MAIN PRODUCT CARD AREA */}
-        <div className='w-full md:h-max h-full flex flex-col mb-10 overflow-y-scroll'>
+        <div className='relative mb-10 flex min-w-0 flex-1 flex-col'>
 
-          <div className='w-full h-full flex flex-col  md:grid md:grid-cols-3 lg:flex lg:flex-row  lg:items-start items-center lg:flex-wrap gap-3 2xl:gap-8 py-6 px-5 lg:px-0 md:mx-auto relative'>
 
-            <div className='lg:hidden sticky bottom-10 z-40 w-1/2 h-[40px] px-6 flex items-center justify-center gap-3 bg-primary text-white rounded-md font-semibold place-self-start' onClick={() => setOpenMenu(!openMenu)}>
+          {isLoading ? (
+            <p role='status' className='border border-[#e7dfd5] bg-white p-8 text-sm text-[#76685d]'>Finding your next scent…</p>
+          ) : isError ? (
+            <p role='alert' className='border border-[#e7dfd5] bg-white p-8 text-sm text-[#76685d]'>The collection could not be loaded. Please try again in a moment.</p>
+          ) : (
+
+          <div className='relative grid w-full grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:gap-6'>
+
+            <button type='button' className='col-span-full mb-2 flex min-h-11 w-max items-center justify-center gap-3 border border-[#30251f] bg-[#30251f] px-5 text-sm font-medium text-white lg:hidden' onClick={() => setOpenMenu(true)}>
               <IoFilter className='text-white w-5 h-5' />
-              Filters
-            </div>
+              Filters {activeFilterCount > 0 && <span className='grid size-5 place-items-center bg-[#f83dbe] text-[10px] text-[#30251f]'>{activeFilterCount}</span>}
+            </button>
 
             <AnimatePresence mode='sync'>
               {data?.products?.map((product, index) => (
@@ -234,16 +170,22 @@ function Shop() {
                   transition={{ duration: .3, ease: "linear" }}
                   key={product.id}
                   custom={index}
-                  className='w-full md-h-max lg:w-max sticky lg:static top-10'
+                  className='h-full min-w-0'
                 >
                   <ProductCard key={product.id} {...product} />
                 </motion.div>
 
               ))}
             </AnimatePresence>
-          </div>
 
-          <ReactPaginate
+            {data?.products?.length === 0 && <div className='col-span-full border border-[#e7dfd5] bg-[#f1e7dc] px-7 py-12 sm:px-12 sm:py-16'>
+              <p className='text-[11px] font-semibold uppercase tracking-[.2em] text-[#a33075]'>Nothing in this edit</p>
+              <h2 className="mt-3 text-3xl tracking-[-.045em] [font-family:Georgia,'Times_New_Roman',serif]">{activeFilterCount > 0 ? 'No scents match these filters.' : 'New scents are on their way.'}</h2>
+              <p className='mt-3 max-w-md text-sm leading-7 text-[#685b51]'>{activeFilterCount > 0 ? 'Try widening your selection to find something lovely.' : 'Check back soon to explore the collection.'}</p>
+              {activeFilterCount > 0 && <button type='button' onClick={() => handleFilterChange({ category: '', region: '', priceRange: [0, 600000] })} className='mt-6 min-h-11 bg-[#30251f] px-6 text-sm font-medium text-white transition-colors hover:bg-[#a33075]'>Clear all filters</button>}
+            </div>}
+
+            {data?.totalCount > filters.pageSize && <ReactPaginate
             previousLabel="←"
             nextLabel="→"
             pageCount={Math.ceil(data?.totalCount / filters.pageSize)}
@@ -254,7 +196,13 @@ function Shop() {
             disableInitialCallback={true}
             marginPagesDisplayed={1}
             pageRangeDisplayed={isMobile ? 2 : 5}
-          />
+          />}
+          </div>
+
+
+          )}
+
+
 
         </div>
       </div>

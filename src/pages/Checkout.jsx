@@ -3,7 +3,7 @@ import { selectCartItems, selectCartTotal, removeFromCart, clearCart } from '@/a
 import ShippingSelector from '@/components/ShippingSelector';
 import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { z } from 'zod';
@@ -16,7 +16,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import { GoTrash } from "react-icons/go";
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useCreateOrderMutation } from '@/app/features/api/orderApiSlice';
 import { toast } from 'react-toastify';
 
@@ -100,27 +100,29 @@ const Checkout = () => {
     }
 
   return (
-    <div className='w-screen 2xl:w-[80%] mx-auto h-max lg:h-screen lg:p-10 p-5'>
+    <main className='mx-auto min-h-screen w-full max-w-7xl bg-[#f9f6f1] px-5 pt-32 pb-16 text-[#30251f] sm:px-8 lg:px-10'>
+        <p className='mb-3 text-[11px] font-semibold tracking-[.2em] text-[#a33075] uppercase'>Your order / Checkout</p>
+        <h1 className="mb-8 text-4xl tracking-[-.05em] sm:text-5xl [font-family:Georgia,'Times_New_Roman',serif]">Almost yours.</h1>
         <div className='w-full flex flex-col lg:flex-row items-center gap-3'>
             {shippingData && shippingData.length > 0 && shippingData.map(item => (
                 <ShippingSelector action={handleAddressSelection} selectedAddress={selectedAddress} {...item}  key={item.id}/>
             ))}
         </div>
         
-        <div className='w-full h-full flex flex-col lg:flex-row gap-10 my-10'>
-            <div className='lg:max-w-[475px] w-full h-max'>
+        <div className='grid w-full gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12'>
+            <div className='w-full border border-[#e3d7c9] bg-white p-6 sm:p-8'>
                  <form onSubmit={handleSubmit(onSubmit)} className='w-full h-max'>
-                    <h1 className='mb-7 text-2xl text-primary'>Shipping Details</h1>
+                    <h2 className="mb-7 text-3xl tracking-[-.04em] [font-family:Georgia,'Times_New_Roman',serif]">Shipping details</h2>
                     
                     <div className='flex flex-col gap-1 w-full my-3'>
                         <label>Street Address</label>
-                        <input {...register(`street`)} type='text' disabled={selectedAddress} className='appearance-none w-full h-[50px] rounded-md border-[1px] border-black/40 px-5'/>
+                        <input {...register(`street`)} type='text' disabled={selectedAddress} className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075]'/>
                         {errors.street && (<p className="mt-2 text-red-500 text-sm">{errors.street.message}</p>)}
                     </div>
 
                     <div className='flex flex-col gap-1 w-full my-3'>
                         <label>City</label>
-                        <input {...register(`city`)} type='text' disabled={selectedAddress} className='appearance-none w-full h-[50px] rounded-md border-[1px] border-black/40 px-5'/>
+                        <input {...register(`city`)} type='text' disabled={selectedAddress} className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075]'/>
                         {errors.city && (<p className="mt-2 text-red-500 text-sm">{errors.city.message}</p>)}
                     </div>
 
@@ -128,7 +130,7 @@ const Checkout = () => {
                         {formFields.slice(2).map(field => (
                             <div key={field} className='flex flex-col gap-1 w-full my-3'>
                                 <label>{field}</label>
-                                <input {...register(field)} type='text' disabled={selectedAddress} className='appearance-none w-full h-[50px] rounded-md border-[1px] border-black/40 px-5'/>
+                                <input {...register(field)} type='text' disabled={selectedAddress} className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075]'/>
                                 {errors[field] && (<p className="mt-2 text-red-500 text-sm">{errors[field].message}</p>)}
                             </div>
                         ))}
@@ -150,9 +152,9 @@ const Checkout = () => {
             </div>
             
             {/* TOTAL AND SHIPPING COST */}
-            <div className='w-full h-full'>
-                <div className='w-full overflow-x-scroll lg:w-full max-h-[500px] flex flex-col items-start gap-4'>
-                    <Table className='lg:w-full h-full w-[600px]'>
+            <div className='min-w-0 border border-[#e3d7c9] bg-white p-6 sm:p-8'>
+                <div className='w-full overflow-x-auto lg:w-full max-h-[500px] flex flex-col items-start gap-4'>
+                    <Table className='min-w-[540px]'>
                         <TableHeader>
                             <TableRow className=''>
                                 <TableHead className="text-black">Product</TableHead>
@@ -202,7 +204,7 @@ const Checkout = () => {
             </div>
         </div>
 
-    </div>
+    </main>
   )
 }
 

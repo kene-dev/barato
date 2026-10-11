@@ -1,5 +1,6 @@
 import supabase from "@/app/supabaseClient";
 import { apiSlice } from "./apiSlice";
+import { hasPreviousPrice } from '@/lib/productPricing';
 
 // const baseUrl = 'https://byunydadjltixnqibsdm.supabase.co'
 // const supabaseKey = import.meta.env.VITE_SUPABASE_KEY
@@ -28,6 +29,31 @@ const productApiSlice = apiSlice.injectEndpoints({
                 .single()
               return error ? { error } : { data }
             }
+          }),
+
+          getSalesProducts: builder.query({
+            async queryFn() {
+              const batchSize = 500;
+              const saleProducts = [];
+              let start = 0;
+
+              // Filter before the Sales page paginates, including products beyond the first API page.
+              while (true) {
+                const { data, error } = await supabase
+                  .from('products')
+                  .select('*')
+                  .order('created_at', { ascending: false })
+                  .range(start, start + batchSize - 1);
+
+                if (error) return { error };
+                saleProducts.push(...data.filter(product => hasPreviousPrice(product.productPrice, product.discountedPrice)));
+                if (data.length < batchSize) break;
+                start += batchSize;
+              }
+
+              return { data: saleProducts };
+            },
+            providesTags: ['Products']
           }),
 
           getProducts: builder.query({
@@ -111,28 +137,9 @@ const productApiSlice = apiSlice.injectEndpoints({
             async queryFn(id){
                 const {data, error} = await supabase.from('products').delete().eq('id', id).select('*')
                 
-                if (error) throw error
-                return {data}
+                return error ? { error } : { data }
             },
-            invalidatesTags: (result, error, id) => ['Products'],
-
-            onQueryStarted: async (id, { dispatch, queryFulfilled, getState }) => {
-              // Optimistic update logic for paginated data
-              const patchResult = dispatch(
-                api.util.updateQueryData('getAdminProducts', (draft) => {
-                  const index = draft.products.findIndex(p => p.id === id);
-                  if (index !== -1) {
-                    draft.products.splice(index, 1);
-                    draft.count -= 1;
-                  }
-                })
-              );
-              try {
-                await queryFulfilled;
-              } catch {
-                patchResult.undo();
-              }
-            }
+            invalidatesTags: ['Products']
           }),
 
           updateProduct: builder.mutation({
@@ -159,5 +166,4 @@ const productApiSlice = apiSlice.injectEndpoints({
     })
 })
 
-export const {useCreateProductMutation, useGetProductsQuery, useGetAdminProductsQuery, useGetSingleProductQuery, useGetProductsByCategoryQuery, useDeleteProductMutation, useUpdateProductMutation} = productApiSlice
-
+export const {useCreateProductMutation, useGetProductsQuery, useGetSalesProductsQuery, useGetAdminProductsQuery, useGetSingleProductQuery, useGetProductsByCategoryQuery, useDeleteProductMutation, useUpdateProductMutation} = productApiSlice

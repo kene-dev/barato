@@ -1,119 +1,55 @@
-import React from 'react'
-import instagram from '/src/assets/ig.svg'
-import facebook from '/src/assets/fb.svg'
-import line from '/src/assets/Line.svg'
-import logo from '../assets/logo.png';
-import { FaTiktok } from "react-icons/fa";
-import { Link } from 'react-router';
+import { Link } from 'react-router'
+import { ArrowUpRight, Instagram, MessageCircle } from 'lucide-react'
+import logo from '../assets/logo.png'
+
+const shopLinks = [
+  { label: 'All fragrances', to: '/shop' },
+  { label: 'About Matrix Scents', to: '/about' },
+  { label: 'Your cart', to: '/cart' },
+]
+
+const helpLinks = [
+  { label: 'Contact us', to: '/contact' },
+  { label: 'FAQs', to: '/faq' },
+  { label: 'Returns & refunds', to: '/returns-refunds' },
+]
 
 function Footer() {
   return (
-
-      // we can remove the margin top
-    <div className='w-screen lg:h-[400px] h-full'>
-
-
-
-      {/* first section bg-red */}
-      {/* 
-        Blending with primary color (like header), keeping original layout/positioning/responsiveness.
-        For social icons: all icons should appear circular, with a bg-white base and a border-primary ring, and on hover their background fills with the primary color and the icon color flips to white, visually matching the header accent style.
-      */}
-      <div className="bg-primary/10 w-full h-full">
-        <div className='bg-primary h-[86%] lg:px-10 px-5 text-white flex lg:flex-row flex-col items-center justify-between lg:pt-0 pt-10'>
-          <div className='w-full flex flex-col gap-4 lg:w-1/3'>
-            <div>
-              <img src={logo} className='w-36 object-contain bg-white rounded-xl border-2 border-primary shadow-sm p-2' />
-              <h1 className='text-lg text-white drop-shadow'>Luxury Scents Within Reach</h1>
-            </div>
-            <p className='text-sm text-white/90'>
-              Authentic designer perfumes without the luxury price tag. Smell expensive, shop smart.
-            </p>
+    <footer className="bg-[#30251f] text-[#f9f5ef]">
+      <div className="mx-auto max-w-7xl px-5 pt-16 pb-8 sm:px-8 lg:px-10 lg:pt-20">
+        <div className="grid gap-12 border-b border-white/20 pb-14 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-16">
+          <div>
+            <p className="mb-5 text-[11px] font-semibold tracking-[.24em] uppercase text-[#f3a7d9]">The Matrix Scents edit</p>
+            <h2 className="max-w-md text-4xl leading-[1.04] tracking-[-.05em] sm:text-5xl [font-family:Georgia,'Times_New_Roman',serif]">Find something that feels like <em className="font-normal text-[#f3a7d9]">you.</em></h2>
+            <Link to="/shop" className="mt-8 inline-flex min-h-11 items-center gap-4 border-b border-[#f3a7d9] pb-1 text-sm font-medium transition-colors hover:text-[#f3a7d9] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3a7d9]">
+              Explore the collection <ArrowUpRight size={18} aria-hidden="true" />
+            </Link>
           </div>
-          
-          <div className='w-full flex flex-col lg:flex-row justify-between items-start lg:w-2/3 lg:mx-64 gap-10 mb-10 lg:mt-0 mt-8'>
-            <div className='flex flex-col gap-3'>
-              <h1 className='font-semibold text-[20px] text-white'>PAGES</h1>
-              <img src={line} alt="" className='w-[35px]' />
-              <Link to='/' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Home</Link>
-              <Link to='/about' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>About</Link>
-              <Link to='/shop' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Shop</Link>
-              <Link to='/cart' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Cart</Link>
-            </div>
-            <div className='flex flex-col gap-3'>
-              <h1 className='font-semibold text-[20px] text-white'>LINKS</h1>
-              <img src={line} alt="" className='w-[35px]' />
-              <Link to='/faq' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>FAQ</Link>
-              <Link to='/contact' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Contact</Link>
-              <Link to='/returns-refunds' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Return & Refund Policy</Link>
-              <a href='#privacy-policy' className='text-sm text-white hover:bg-white/90 hover:text-primary transition-colors px-2 py-1 rounded'>Privacy Policy</a>
-            </div>
-            <div className='flex flex-col gap-3'>
-              <h1 className='font-semibold text-[20px] text-white'>SOCIALS</h1>
-              <img src={line} alt="" className='w-[35px]' />
-              <div className='flex gap-4'>
-                <a href="https://www.instagram.com/matrix_scents" target="_blank" rel="noopener noreferrer" className='flex items-center justify-center w-10 h-10'>
-                  <img src={instagram} alt="Instagram" className='w-5 h-5 ' />
-                </a>
-                <a href="https://www.tiktok.com/@matrixscents" target="_blank" rel="noopener noreferrer" className='flex items-center justify-center w-10 h-10'>
-                  <FaTiktok className='w-5 h-5' />
-                </a>
-              </div>
-            </div>
-          </div>
+          <nav aria-label="Shop links">
+            <h3 className="mb-5 text-[11px] font-semibold tracking-[.2em] uppercase text-[#d3bbb2]">Explore</h3>
+            <ul className="space-y-3">
+              {shopLinks.map(link => <li key={link.to}><Link to={link.to} className="text-sm text-[#f9f5ef]/85 transition-colors hover:text-[#f3a7d9] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3a7d9]">{link.label}</Link></li>)}
+            </ul>
+          </nav>
+          <nav aria-label="Support links">
+            <h3 className="mb-5 text-[11px] font-semibold tracking-[.2em] uppercase text-[#d3bbb2]">Here to help</h3>
+            <ul className="space-y-3">
+              {helpLinks.map(link => <li key={link.to}><Link to={link.to} className="text-sm text-[#f9f5ef]/85 transition-colors hover:text-[#f3a7d9] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3a7d9]">{link.label}</Link></li>)}
+            </ul>
+            <a href="https://wa.me/2348060119051" target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-sm text-[#f3a7d9] hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3a7d9]"><MessageCircle size={17} /> Chat on WhatsApp</a>
+          </nav>
         </div>
-        <div className='h-[14%] bg-primary text-white flex justify-center items-center font-semibold lg:text-[20px] text-base p-2'>
-          Copyright c 2025. All rights reserved 
+        <div className="flex flex-col gap-5 pt-7 text-xs text-[#d3bbb2] sm:flex-row sm:items-center sm:justify-between">
+          <Link to="/" aria-label="Matrix Scents home" className="inline-flex w-max items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3a7d9]"><img src={logo} alt="" className="size-10 bg-white object-contain p-1" /><span className="text-sm font-semibold tracking-[.08em] uppercase text-white">Matrix Scents</span></Link>
+          <p>© {new Date().getFullYear()} Matrix Scents. All rights reserved.</p>
+          <div className="flex items-center gap-5">
+            <Link to="/contact" className="text-xs text-[#f9f5ef]/85 hover:text-[#f3a7d9] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3a7d9]">Get in touch ↗</Link>
+            <a href="https://www.instagram.com/matrix_scents" target="_blank" rel="noopener noreferrer" aria-label="Matrix Scents on Instagram" className="text-[#f9f5ef]/85 hover:text-[#f3a7d9] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3a7d9]"><Instagram size={18} /></a>
+          </div>
         </div>
       </div>
-
-
-
-      {/* <div className='bg-primary h-[86%] lg:px-10 px-5 text-white flex lg:flex-row flex-col items-center justify-between lg:pt-0 pt-10'>
-        <div className='w-full flex flex-col gap-4  lg:w-1/3'>
-        <div>
-          <img src={logo} className='w-36 object-contain ' />
-          <h1 className='text-lg'>Shop Smart,shop more</h1>
-        </div>
-
-         <p className='text-sm '>Find everything you need, from groceries to household essentials, all in one place – delivered straight to your doorstep!</p>
-        </div>
-        
-        <div className='w-full flex flex-col lg:flex-row justify-between items-start  lg:w-2/3 lg:mx-64 gap-10 mb-10 lg:mt-0 mt-8'>
-          <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-[20px]'>PAGES</h1>
-            <img src={line} alt="" className='w-[35px] ' />
-            <a href='#' className='text-sm'>Home</a>
-            <a href='#' className='text-sm'>About</a>
-            <a href='#' className='text-sm'>Shop</a>
-            <a href='#' className='text-sm'>FAQ</a>
-            <a href='#' className='text-sm'>Contact</a>
-          </div>
-          <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-[20px]'>LINKS</h1>
-            <img src={line} alt="" className='w-[35px] ' />
-            <a href='#' className='text-sm'>Terms & Conditions</a>
-            <a href='#' className='text-sm'>Shipping & Delivery</a>
-            <a href='#' className='text-sm'>Privacy Policy</a>
-          </div>
-          <div className='flex flex-col gap-3'>
-            <h1 className='font-semibold text-[20px]'>SOCIALS</h1>
-            <img src={line} alt="" className='w-[35px] ' />
-            <div className='flex gap-4 w-5 h-5 '>
-              <img src={twitter} alt="" />
-              <img src={instagram} alt="" />
-              <img src={facebook} alt="" />
-            </div>
-          </div>
-        </div>
-      </div> */}
-
-      {/* second section bg-black */}
-
-      {/* <div className='h-[14%] bg-black text-white flex justify-center items-center font-semibold lg:text-[20px] text-base p-2'>
-        Copyright c 2025. All rights reserved 
-      </div> */}
-    </div>
+    </footer>
   )
 }
 

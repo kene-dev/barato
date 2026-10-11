@@ -1,34 +1,24 @@
 import { useGetUserQuery } from '@/app/features/api/authApiSlice'
 import Sidebar from '@/components/admin/Sidebar'
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, Outlet } from 'react-router'
 
 const AdminLayout = () => {
-    const userId = useSelector(state => state.persistedReducer.auth.user)
-    const {data:user, isLoading} = useGetUserQuery(userId?.id);
-    console.log(user)
-  
-  
-  if(isLoading){
-    return (
-      <div className='w-full h-screen flex items-center justify-center'>
-        <div className='loader-primary'></div>
-      </div>
-    );
-  }
+  const userId = useSelector(state => state.persistedReducer.auth.user)
+  const { data: user, isLoading } = useGetUserQuery(userId?.id, { skip: !userId?.id })
 
+  if (isLoading) {
+    return <div className="flex min-h-screen items-center justify-center bg-[#f7f2ec]"><div className="loader-primary" /></div>
+  }
+  if (user?.[0]?.role !== 'admin') return <Navigate to="/" replace />
 
   return (
-    <div className='w-screen h-screen flex items-start gap-7 lg:px-5 lg:my-5'>
-        <div className='hidden lg:block'>
-          <Sidebar />
-        </div>
-        <div className='h-full grow overflow-y-scroll'>
-          {user && user[0].role === 'admin'  ? 
-            <Outlet />
-           : <Navigate to="/" replace />}
-        </div>
+    <div className="min-h-screen bg-[#f7f2ec] text-[#30251f] lg:grid lg:grid-cols-[240px_minmax(0,1fr)]">
+      <aside className="hidden lg:block"><Sidebar /></aside>
+      <div className="min-w-0">
+        <div className="lg:hidden"><Sidebar compact /></div>
+        <main className="mx-auto w-full max-w-[1500px] px-4 py-7 sm:px-7 lg:px-10 lg:py-10"><Outlet /></main>
+      </div>
     </div>
   )
 }

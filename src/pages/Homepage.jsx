@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-    ShoppingCart,
+    ArrowUpRight,
+    Check,
+    Plus,
     Search,
     Menu,
     ArrowRight,
-    Star,
     Tag,
     Instagram,
     Facebook,
@@ -18,33 +19,27 @@ import {
     TrendingUp,
 } from 'lucide-react';
 import logo from '../assets/logo.png';
+import homeHero from '../assets/home-hero-editorial.jpg';
+import categoryMen from '../assets/category-men-editorial.jpg';
+import categoryWomen from '../assets/category-women-editorial.jpg';
+import categoryUnisex from '../assets/category-unisex-editorial.jpg';
 import { Link, useNavigate } from 'react-router';
 import { useGetProductsQuery } from '@/app/features/api/productApiSlice';
 import { useGetCategoriesQuery } from '@/app/features/api/categoriesApiSlice';
 import { useTranslation } from 'react-i18next';
 import useDebounce from '@/hooks/useDebounce';
-import Header from '@/components/Header';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '@/app/features/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, selectCartItems } from '@/app/features/cartSlice';
 
 // Category image & description mapping by normalised name
 const CATEGORY_META = {
-    men: {
-        description: 'Bold & Sophisticated',
-        image: 'https://images.unsplash.com/photo-1647507653704-bde7f2d6dbf0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBwZXJmdW1lJTIwYm90dGxlJTIwbWluaW1hbHxlbnwxfHx8fDE3Njk5NDIyNTh8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    women: {
-        description: 'Elegant & Captivating',
-        image: 'https://images.unsplash.com/photo-1759793500110-e3cb1f0fe6ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZXNpZ25lciUyMGZyYWdyYW5jZSUyMGNvbGxlY3Rpb258ZW58MXx8fHwxNzY5OTQyMjU5fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    unisex: {
-        description: 'For Everyone',
-        image: 'https://images.unsplash.com/photo-1760862652442-e8ff7ebdd2f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBwZXJmdW1lJTIwYm90dGxlcyUyMGVsZWdhbnR8ZW58MXx8fHwxNzY5OTQyMjU4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    },
+    men: { description: 'Grounded & expressive', image: categoryMen },
+    women: { description: 'Softness with character', image: categoryWomen },
+    unisex: { description: 'Made for everyone', image: categoryUnisex },
 };
 
 const popularSearchesList = [
@@ -399,225 +394,84 @@ function SearchModal({ isOpen, onClose, onSearch }) {
 function Hero() {
     const navigate = useNavigate();
     return (
-        <section className="relative min-h-screen flex items-center overflow-hidden">
-            {/* Background Image with Overlay */}
-            <div className="absolute inset-0">
-                <img
-                    src="https://images.unsplash.com/photo-1760862652442-e8ff7ebdd2f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBwZXJmdW1lJTIwYm90dGxlcyUyMGVsZWdhbnR8ZW58MXx8fHwxNzY5OTQyMjU4fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                    alt="Luxury Perfumes"
-                    className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/40" />
-            </div>
-
-            {/* Content */}
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-                <div className="max-w-3xl">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        {/* Badge */}
-                        <div className="inline-flex items-center gap-2 mb-6">
-                            <Star className="size-5 text-primary fill-primary" />
-                            <span className="text-primary font-medium">Premium Collection 2026</span>
-                        </div>
-
-                        {/* Main Heading */}
-                        <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
-                            Discover Your
-                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/40 to-primary/70">
-                                Signature Scent
-                            </span>
-                        </h1>
-
-                        <p className="text-xl text-gray-300 mb-10 max-w-2xl leading-relaxed">
-                            Explore our curated collection of authentic designer fragrances. Luxury quality at
-                            accessible prices, delivered to your door.
+        <section className="bg-[#f5efe7] pt-20 text-[#30251f]" aria-labelledby="home-hero-heading">
+            <div className="mx-auto grid max-w-[1500px] lg:min-h-[650px] lg:grid-cols-[47%_53%]">
+                <div className="flex flex-col justify-center px-6 py-16 sm:px-10 lg:px-14 lg:py-20 xl:px-20">
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+                        <p className="mb-7 flex items-center gap-3 text-[11px] font-semibold tracking-[.24em] uppercase text-[#a33075]">
+                            <span className="h-px w-8 bg-[#a33075]" /> The art of finding your scent
                         </p>
-
-                        {/* CTA Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => navigate('/shop')}
-                                className="group px-8 py-4 bg-gradient-to-r from-[#C83232] via-red-600 to-red-800 text-white font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-[#C83232]/50 transition-shadow"
-                            >
-                                Explore Collection
-                                <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
-                            </motion.button>
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => navigate('/shop', { state: { category: 13 } })}
-                                className="px-8 py-4 border-2 border-white text-white font-semibold hover:bg-white hover:text-black transition-colors"
-                            >
-                                Shop Men's
-                            </motion.button>
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => navigate('/shop', { state: { category: 14 } })}
-                                className="px-8 py-4 border-2 border-white text-white font-semibold hover:bg-white hover:text-black transition-colors"
-                            >
-                                Shop Women's
-                            </motion.button>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="flex gap-12 mt-16 pt-8 border-t border-white/20">
-                            {[
-                                { label: 'Premium Brands', value: '50+' },
-                                { label: 'Happy Customers', value: '10K+' },
-                                { label: 'Products', value: '500+' },
-                            ].map((stat, index) => (
-                                <motion.div
-                                    key={stat.label}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.5 + index * 0.1 }}
-                                >
-                                    <p className="text-3xl font-bold text-primary">{stat.value}</p>
-                                    <p className="text-sm text-gray-400 mt-1">{stat.label}</p>
-                                </motion.div>
-                            ))}
+                        <h1 id="home-hero-heading" className="max-w-[720px] text-[clamp(3.5rem,7vw,7.2rem)] leading-[.91] tracking-[-.065em] [font-family:Georgia,'Times_New_Roman',serif]">
+                            A little<br /><em className="font-normal text-[#a33075]">more you.</em>
+                        </h1>
+                        <p className="mt-8 max-w-md text-base leading-7 text-[#62554c] sm:text-lg">
+                            Fragrances to wear close, give generously, and remember long after the day ends.
+                        </p>
+                        <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
+                            <button type="button" onClick={() => navigate('/shop')} className="inline-flex min-h-12 items-center gap-4 border border-[#30251f] bg-[#30251f] px-6 text-sm font-medium text-white shadow-[4px_4px_0_#f83dbe] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a33075]">
+                                Shop the collection <ArrowUpRight size={17} />
+                            </button>
+                            <button type="button" onClick={() => navigate('/shop', { state: { category: 13 } })} className="border-b border-[#30251f] py-2 text-sm font-medium hover:text-[#a33075] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a33075]">
+                                Explore men&apos;s scents
+                            </button>
                         </div>
                     </motion.div>
+                    <p className="mt-14 hidden border-t border-[#d6c9bb] pt-4 text-[11px] tracking-[.2em] uppercase text-[#76685d] lg:block">01 / A fragrance wardrobe for every mood</p>
+                </div>
+                <div className="relative min-h-[340px] overflow-hidden bg-[#e8d8c5] sm:min-h-[480px] lg:min-h-full">
+                    <img src={homeHero} alt="Amber perfume bottle, linen and burgundy flower in afternoon light" fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-[70%_center] lg:object-[66%_center]" />
+                    <div className="absolute right-5 bottom-5 border border-white/70 bg-[#faf7f2]/90 px-4 py-2 text-[10px] tracking-[.16em] uppercase text-[#30251f] backdrop-blur-sm sm:right-8 sm:bottom-8">Curated with feeling</div>
                 </div>
             </div>
-
-            {/* Scroll Indicator */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2"
-            >
-                <motion.div
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center pt-2"
-                >
-                    <div className="w-1 h-2 bg-white/50 rounded-full" />
-                </motion.div>
-            </motion.div>
         </section>
     );
 }
 
 // Category Bento Component
 function CategoryBento() {
-    const navigate = useNavigate();
     const { data: categories } = useGetCategoriesQuery({ searchTerm: '' });
 
-    const handleCategoryClick = (categoryId) => {
-        navigate('/shop', { state: { category: categoryId } });
+    const getCategoryMeta = (name = '') => {
+        const normalized = name.toLowerCase();
+        if (/^men|^male/.test(normalized)) return CATEGORY_META.men;
+        if (/^women|^ladies|^female/.test(normalized)) return CATEGORY_META.women;
+        return CATEGORY_META.unisex;
     };
 
     return (
-        <section className="py-24 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Header */}
-                <div className="mb-16">
-                    <motion.h2
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-5xl md:text-6xl font-bold mb-4"
-                    >
-                        Shop by Category
-                    </motion.h2>
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1 }}
-                        className="text-xl text-gray-600"
-                    >
-                        Find your perfect match in our expertly curated collections
-                    </motion.p>
+        <section className="bg-[#f9f6f1] py-20 text-[#30251f] sm:py-24" aria-labelledby="category-heading">
+            <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+                <div className="mb-10 flex flex-wrap items-end justify-between gap-5 sm:mb-12">
+                    <div>
+                        <p className="mb-3 text-[11px] font-semibold tracking-[.22em] uppercase text-[#a33075]">The scent library</p>
+                        <h2 id="category-heading" className="text-[clamp(2.6rem,5vw,4.8rem)] leading-[.98] tracking-[-.05em] [font-family:Georgia,'Times_New_Roman',serif]">Follow your instinct.</h2>
+                    </div>
+                    <p className="max-w-xs text-sm leading-6 text-[#6e6258]">A collection for every side of you. Start wherever the mood takes you.</p>
                 </div>
-
-                {/* Bento Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
                     {categories?.map((category, index) => {
-                        const key = category.categoryName?.toLowerCase();
-                        const meta = CATEGORY_META[key] ?? {
-                            description: 'Explore Collection',
-                            image: 'https://images.unsplash.com/photo-1745826420604-41187121dd82?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJmdW1lJTIwYm90dGxlJTIwY2xvc2UlMjB1cHxlbnwxfHx8fDE3Njk5NDIyNTl8MA&ixlib=rb-4.1.0&q=80&w=1080',
-                        };
+                        const meta = getCategoryMeta(category.categoryName);
                         return (
-                            <motion.div
-                                key={category.id}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                onClick={() => handleCategoryClick(category.id)}
-                                className="group relative overflow-hidden cursor-pointer"
-                            >
-                                <div className="relative overflow-hidden bg-black h-[420px]">
-                                    {/* Image */}
-                                    <img
-                                        src={meta.image}
-                                        alt={category.categoryName}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                    />
-
-                                    {/* Gradient Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-
-                                    {/* Content */}
-                                    <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 20 }}
-                                            whileInView={{ opacity: 1, y: 0 }}
-                                            viewport={{ once: true }}
-                                            transition={{ delay: 0.3 + index * 0.1 }}
-                                        >
-                                            <p className="text-primary text-sm font-semibold mb-2 uppercase tracking-wider">
-                                                {meta.description}
-                                            </p>
-                                            <h3 className="text-white font-bold mb-4 text-4xl md:text-5xl capitalize">
-                                                {category.categoryName}
-                                            </h3>
-                                            <div className="flex items-center gap-2 text-white group-hover:gap-4 transition-all">
-                                                <span className="font-medium">Explore</span>
-                                                <ArrowRight className="size-5" />
-                                            </div>
-                                        </motion.div>
+                            <motion.div key={category.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="min-w-0">
+                                <Link to="/shop" state={{ category: category.id }} className="group relative block aspect-[4/5] overflow-hidden bg-[#ddcbbb] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a33075] sm:aspect-[3/4]">
+                                    <img src={meta.image} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] motion-reduce:transform-none" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#1d1513]/85 via-transparent to-transparent" />
+                                    <span className="absolute top-5 left-5 border border-white/70 px-3 py-1.5 text-[10px] tracking-[.14em] uppercase text-white">No. 0{index + 1}</span>
+                                    <div className="absolute right-5 bottom-5 left-5 flex items-end justify-between gap-3 text-white sm:right-7 sm:bottom-7 sm:left-7">
+                                        <div>
+                                            <p className="mb-2 text-[11px] tracking-[.16em] uppercase text-[#f4d8e7]">{meta.description}</p>
+                                            <h3 className="text-3xl leading-none tracking-[-.04em] capitalize sm:text-4xl [font-family:Georgia,'Times_New_Roman',serif]">{category.categoryName}</h3>
+                                        </div>
+                                        <span className="grid size-10 shrink-0 place-items-center border border-white/80 transition-colors group-hover:bg-white group-hover:text-[#30251f]" aria-hidden="true"><ArrowUpRight size={18} /></span>
                                     </div>
-
-                                    {/* Hover Border Effect */}
-                                    <div className="absolute inset-0 border-4 border-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                                </div>
+                                </Link>
                             </motion.div>
                         );
                     })}
                 </div>
-
-                {/* Features Bar */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="grid md:grid-cols-3 gap-8 mt-16 p-8 bg-white border-l-4 border-primary"
-                >
-                    {[
-                        { label: '100% Authentic', value: 'Guaranteed genuine products' },
-                        { label: '24/7 Support', value: 'Expert advice anytime' },
-                    ].map((feature) => (
-                        <div key={feature.label} className="flex items-center gap-4">
-                            <div className="size-2 bg-primary rounded-full" />
-                            <div>
-                                <p className="font-bold text-lg">{feature.label}</p>
-                                <p className="text-gray-600 text-sm">{feature.value}</p>
-                            </div>
-                        </div>
-                    ))}
-                </motion.div>
+                <div className="mt-10 flex flex-wrap justify-between gap-3 border-t border-[#d9cec0] pt-5 text-[11px] tracking-[.12em] uppercase text-[#74685e]">
+                    <span>Chosen for the moments that stay</span><span>Find your kind of fragrance ↗</span>
+                </div>
             </div>
         </section>
     );
@@ -698,66 +552,53 @@ function Promotions() {
 
 // Product Card Component
 function ProductCard({ product, index }) {
-    const [isHovered, setIsHovered] = useState(false);
-    const navigate = useNavigate();
-
     const dispatch = useDispatch()
+    const isInCart = useSelector(state => selectCartItems(state).some(item => item.id === product.id))
+    const hasPreviousPrice = Number(product.originalPrice) > Number(product.price)
+    const formatPrice = price => Number(price).toLocaleString('en-NG', {
+        style: 'currency', currency: 'NGN', maximumFractionDigits: 0,
+    })
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.3 }}
-            onHoverStart={() => setIsHovered(true)}
-            onHoverEnd={() => setIsHovered(false)}
-            className="group cursor-pointer"
+            transition={{ delay: index * 0.08 }}
+            className="group flex h-full min-w-0 flex-col border border-[#e7dfd5] bg-[#faf7f2] p-2.5 pb-5 text-[#30251f]"
         >
-            {/* Image Container */}
-            <div className="relative mb-4 overflow-hidden bg-gray-100">
-                <div className="aspect-[3/4] relative">
+            <div className="relative">
+                <Link to={`/shop/${product.id}`} className="relative block aspect-[4/5] overflow-hidden bg-[#eee8df] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ba167f]">
                     <img
                         src={product.image}
                         alt={product.name}
-                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035] motion-reduce:transform-none"
                     />
-
-                    {/* Featured Badge */}
-                    {product.featured && (
-                        <div className="absolute top-4 left-4">
-                            <div className="px-3 py-1 bg-black text-white text-xs font-bold uppercase tracking-wider">
-                                Featured
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Overlay with CTA */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: isHovered ? 1 : 0 }}
-                        className="absolute inset-0 bg-black/40 flex items-center justify-center"
-                    >
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-
-                            onClick={() => dispatch(addToCart({ productImage: product.image, productName: product.name, productPrice: product.price, id: product.id }))}
-                            className="px-6 py-3 bg-white text-black font-semibold flex items-center gap-2 hover:bg-primary hover:text-white transition-colors"
-                        >
-                            <ShoppingCart className="size-5" />
-                            Add to Cart
-                        </motion.button>
-                    </motion.div>
-                </div>
+                    <span className="absolute right-3 bottom-3 grid size-9 place-items-center border border-[#30251f30] bg-[#faf7f2]" aria-hidden="true"><ArrowUpRight size={18} /></span>
+                </Link>
+                {product.featured && <span className="absolute top-4 -left-[5px] -rotate-5 bg-[#f83dbe] px-3 py-1.5 text-[10px] font-semibold tracking-[.08em] uppercase">Featured</span>}
             </div>
-
-            {/* Product Info */}
-            <div className="space-y-1">
-                <p className="text-sm text-gray-500 uppercase tracking-wider">{product.brand}</p>
-                <h3 className="font-bold text-lg group-hover:text-primary transition-colors">
-                    {product.name}
+            <div className="flex flex-1 flex-col px-2 pt-5">
+                <p className="mb-2 text-[10px] font-semibold tracking-[.18em] text-[#a33075] uppercase">{product.brand}</p>
+                <h3 className="mb-5 text-[clamp(1.35rem,2vw,1.8rem)] leading-tight tracking-[-.04em] [font-family:Georgia,'Times_New_Roman',serif]">
+                    <Link to={`/shop/${product.id}`} className="hover:underline hover:underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ba167f]">{product.name}</Link>
                 </h3>
-                <p className="text-xl font-bold">{`₦${product.price?.toLocaleString()}`}</p>
+                <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-[#d9cec0] pt-4">
+                    <div className="flex flex-col gap-0.5">
+                        <span className="text-sm font-semibold">{formatPrice(product.price)}</span>
+                        {hasPreviousPrice && <del className="text-xs text-[#796d63]">{formatPrice(product.originalPrice)}</del>}
+                    </div>
+                    <button
+                        type="button"
+                        disabled={isInCart}
+                        onClick={() => dispatch(addToCart({ productImage: product.image, productName: product.name, productPrice: product.price, id: product.id }))}
+                        className={`inline-flex min-h-11 items-center gap-2 border px-3 py-2 text-xs font-medium focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ba167f] ${isInCart ? 'cursor-not-allowed border-[#d1cbc5] bg-[#e6e2dd] text-[#716b65]' : 'border-[#30251f] bg-[#f83dbe] shadow-[3px_3px_0_#30251f] transition-transform hover:-translate-x-px hover:-translate-y-px active:translate-x-[3px] active:translate-y-[3px]'}`}
+                    >
+                        {isInCart ? 'In cart' : 'Add to cart'}
+                        {isInCart ? <Check size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
+                    </button>
+                </div>
             </div>
         </motion.div>
     );
@@ -793,6 +634,7 @@ function FeaturedProducts() {
                     name: product.productName,
                     brand: brandName,
                     price: product.productPrice,
+                    originalPrice: product.discountedPrice,
                     image: product.productImage || 'https://images.unsplash.com/photo-1647507653704-bde7f2d6dbf0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
                     featured: true,
                 });
@@ -920,134 +762,36 @@ function Newsletter() {
     };
 
     return (
-        <section className="py-24 bg-black text-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
-                    {/* Left Content */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                    >
-                        <div className="space-y-6">
-                            <div className="inline-block px-4 py-2 bg-primary/20 border border-primary/30">
-                                <p className="text-primary font-semibold text-sm uppercase tracking-wider">
-                                    Stay Updated
-                                </p>
-                            </div>
-
-                            <h2 className="text-5xl md:text-6xl font-bold leading-tight">
-                                Join Our Newsletter
-                            </h2>
-
-                            <p className="text-xl text-gray-400 leading-relaxed">
-                                Be the first to know about new arrivals, exclusive offers, and fragrance tips
-                                from our experts.
-                            </p>
-
-                            <div className="flex gap-8 pt-4">
-                                <div>
-                                    <p className="text-3xl font-bold text-primary">5K+</p>
-                                    <p className="text-sm text-gray-500">Subscribers</p>
-                                </div>
-                                <div>
-                                    <p className="text-3xl font-bold text-primary">Weekly</p>
-                                    <p className="text-sm text-gray-500">Updates</p>
-                                </div>
-                            </div>
+        <section className="bg-[#e8dbce] py-20 text-[#30251f] sm:py-24" aria-labelledby="newsletter-heading">
+            <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-20 lg:px-10">
+                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                    <p className="mb-5 text-[11px] font-semibold tracking-[.22em] uppercase text-[#a33075]">A note from Matrix Scents</p>
+                    <h2 id="newsletter-heading" className="max-w-xl text-[clamp(2.8rem,5vw,5rem)] leading-[.98] tracking-[-.055em] [font-family:Georgia,'Times_New_Roman',serif]">
+                        Good things are <em className="font-normal text-[#a33075]">in the air.</em>
+                    </h2>
+                    <p className="mt-6 max-w-md text-base leading-7 text-[#62554c]">Get the first word on new fragrances, thoughtful finds, and special offers.</p>
+                    <div className="mt-10 h-px max-w-md bg-[#cbb8a7]" />
+                    <p className="mt-4 text-[11px] tracking-[.16em] uppercase text-[#76685d]">Your inbox, with a little more feeling</p>
+                </motion.div>
+                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="border border-[#d5c5b7] bg-[#faf7f2] p-6 shadow-[8px_8px_0_#d1baa7] sm:p-9">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                        {submitSuccess && <p role="status" className="border border-[#86a581] bg-[#e9f2e5] p-3 text-sm text-[#31552b]">You’re on the list. Look out for a note from us.</p>}
+                        <div>
+                            <label htmlFor="name" className="mb-2 block text-[11px] font-semibold tracking-[.14em] uppercase">First name</label>
+                            <input {...register('name')} id="name" type="text" autoComplete="given-name" placeholder="Your first name" className="min-h-12 w-full border border-[#cdbdae] bg-white px-4 text-sm outline-none placeholder:text-[#8a7c72] focus-visible:border-[#a33075]" />
+                            {errors.name && <p className="mt-2 text-sm text-[#a02e4f]">{errors.name.message}</p>}
                         </div>
-                    </motion.div>
-
-                    {/* Right Form */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                            {submitSuccess && (
-                                <div className="p-4 bg-green-50/10 border border-green-500/30 rounded-lg">
-                                    <p className="text-green-400 text-sm">
-                                        ✓ Successfully subscribed to our newsletter!
-                                    </p>
-                                </div>
-                            )}
-
-                            {/* Email Input */}
-                            <div>
-                                <label
-                                    htmlFor="email"
-                                    className="block text-sm font-semibold mb-3 uppercase tracking-wider"
-                                >
-                                    Email Address
-                                </label>
-                                <input
-                                    {...register('email')}
-                                    type="email"
-                                    id="email"
-                                    placeholder="your.email@example.com"
-                                    className={`w-full px-6 py-4 bg-white text-black font-medium placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-all ${errors.email
-                                        ? 'border-2 border-red-500 focus:ring-red-500'
-                                        : 'focus:ring-primary border-transparent'
-                                        }`}
-                                />
-                                {errors.email && (
-                                    <p className="mt-2 text-sm text-red-400">{errors.email.message}</p>
-                                )}
-                            </div>
-
-                            {/* Name Input */}
-                            <div>
-                                <label
-                                    htmlFor="name"
-                                    className="block text-sm font-semibold mb-3 uppercase tracking-wider"
-                                >
-                                    First Name
-                                </label>
-                                <input
-                                    {...register('name')}
-                                    type="text"
-                                    id="name"
-                                    placeholder="John"
-                                    className={`w-full px-6 py-4 bg-white text-black font-medium placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-all ${errors.name
-                                        ? 'border-2 border-red-500 focus:ring-red-500'
-                                        : 'focus:ring-primary border-transparent'
-                                        }`}
-                                />
-                                {errors.name && (
-                                    <p className="mt-2 text-sm text-red-400">{errors.name.message}</p>
-                                )}
-                            </div>
-
-                            {/* Submit Button */}
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="group w-full px-8 py-4 bg-gradient-to-r from-[#C83232] via-red-600 to-red-800 text-white font-bold flex items-center justify-center gap-2 hover:from-red-700 hover:to-red-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isSubmitting ? (
-                                    <span className="flex items-center justify-center gap-2">
-                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        Subscribing...
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center justify-center gap-2">
-                                        Subscribe Now
-                                        <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
-                                    </span>
-                                )}
-                            </motion.button>
-
-                            <p className="text-xs text-gray-500 leading-relaxed">
-                                By subscribing, you agree to receive marketing emails from Luxury Scents.
-                                Unsubscribe anytime.
-                            </p>
-                        </form>
-                    </motion.div>
-                </div>
+                        <div>
+                            <label htmlFor="email" className="mb-2 block text-[11px] font-semibold tracking-[.14em] uppercase">Email address</label>
+                            <input {...register('email')} id="email" type="email" autoComplete="email" placeholder="you@example.com" className="min-h-12 w-full border border-[#cdbdae] bg-white px-4 text-sm outline-none placeholder:text-[#8a7c72] focus-visible:border-[#a33075]" />
+                            {errors.email && <p className="mt-2 text-sm text-[#a02e4f]">{errors.email.message}</p>}
+                        </div>
+                        <button type="submit" disabled={isSubmitting} className="flex min-h-12 w-full items-center justify-between gap-3 bg-[#30251f] px-5 text-sm font-medium text-white transition-colors hover:bg-[#50372f] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a33075] disabled:cursor-wait disabled:opacity-60">
+                            {isSubmitting ? 'Subscribing…' : 'Join the list'} <ArrowUpRight size={18} aria-hidden="true" />
+                        </button>
+                        <p className="text-xs leading-5 text-[#75685d]">Occasional emails from Matrix Scents. Unsubscribe anytime.</p>
+                    </form>
+                </motion.div>
             </div>
         </section>
     );
@@ -1068,7 +812,7 @@ export function Footer() {
                         className="lg:col-span-2 space-y-6"
                     >
                         <div>
-                            <h3 className="text-3xl font-bold mb-2">Luxury Scents</h3>
+                            <h3 className="text-3xl font-bold mb-2">Matrix Scents</h3>
                             <p className="text-primary font-semibold">Within Reach</p>
                         </div>
 
@@ -1085,7 +829,7 @@ export function Footer() {
                             </div>
                             <div className="flex items-center gap-3 text-gray-600">
                                 <Mail className="size-5" />
-                                <span>hello@luxuryscents.ng</span>
+                                <span>Contact us through the site</span>
                             </div>
                             <div className="flex items-center gap-3 text-gray-600">
                                 <MapPin className="size-5" />
@@ -1182,7 +926,7 @@ export function Footer() {
                 <div className="border-t border-gray-200 py-8">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <p className="text-gray-600 text-sm">
-                            © 2026 Luxury Scents. All rights reserved.
+                            © 2026 Matrix Scents. All rights reserved.
                         </p>
                         <div className="flex gap-6 text-sm">
                             <a href="#" className="text-gray-600 hover:text-primary transition-colors">
@@ -1204,21 +948,11 @@ export function Footer() {
 
 // ==================== MAIN HOMEPAGE ====================
 export default function Homepage() {
-    const [scrollY, setScrollY] = useState(0);
-
-    useEffect(() => {
-        const handleScroll = () => setScrollY(window.scrollY);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
     return (
-        <div className="min-h-screen bg-white">
-            <Header scrollY={scrollY} />
+        <div className="min-h-screen bg-[#f9f6f1]">
             <Hero />
             <CategoryBento />
             <Newsletter />
-            {/* <Promotions /> */}
             <FeaturedProducts />
 
         </div>

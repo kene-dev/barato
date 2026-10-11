@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams, useNavigate } from 'react-router'
+import { useSearchParams } from 'react-router'
 import ProductCard from '@/components/ProductCard'
 import { IoFilter, IoClose } from "react-icons/io5"
-import RangeSlider from '@/components/RangeSlider'
+import CatalogFilters from '@/components/CatalogFilters'
 import { useGetCategoriesQuery } from '@/app/features/api/categoriesApiSlice'
+import { useGetRegionsQuery } from '@/app/features/api/regionsApiSlice'
 import { useGetProductsQuery } from '@/app/features/api/productApiSlice'
 import useDebounce from '@/hooks/useDebounce'
 import ReactPaginate from 'react-paginate'
@@ -15,33 +16,32 @@ import {
 import { Search } from 'lucide-react'
 
 function SearchResults() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const query = searchParams.get('q') || ''
 
   const [openMenu, setOpenMenu] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const { data: categories } = useGetCategoriesQuery({ searchTerm: '' })
+  const { data: regions } = useGetRegionsQuery({ searchTerm: '' })
 
   const [filters, setFilters] = useState({
     page: 1,
     pageSize: 8,
     searchTerm: query,
     category: '',
+    region: '',
     priceRange: [0, 600000]
   })
 
-  const { data } = useGetProductsQuery(filters)
+  const { data, isLoading, isError } = useGetProductsQuery(filters)
 
   // Update search term when query param changes
   useEffect(() => {
-    if (query) {
-      setFilters(prev => ({
-        ...prev,
-        searchTerm: query,
-        page: 1
-      }))
-    }
+    setFilters(prev => ({
+      ...prev,
+      searchTerm: query,
+      page: 1
+    }))
   }, [query])
 
   const handleFilterChange = (newFilters) => {
@@ -77,13 +77,15 @@ function SearchResults() {
     setFilters(prev => ({
       ...prev,
       category: '',
+      region: '',
       priceRange: [0, 600000],
       page: 1
     }))
   }
 
-  const hasActiveFilters = filters.category ||
+  const hasActiveFilters = filters.category || filters.region ||
     filters.priceRange[0] > 0 || filters.priceRange[1] < 600000
+  const activeFilterCount = Number(Boolean(filters.category)) + Number(Boolean(filters.region)) + Number(filters.priceRange[0] > 0 || filters.priceRange[1] < 600000)
 
   const cardAnimate = {
     offScreen: { y: 10, opacity: 0 },
@@ -110,15 +112,15 @@ function SearchResults() {
   }, [])
 
   return (
-    <div className='w-full min-h-screen bg-gray-50 mt-24'>
+    <main className='min-h-screen bg-[#f9f6f1] pt-20 text-[#30251f]'>
       {/* Header Section */}
-      <div className='bg-white border-b border-gray-200 py-6'>
-        <div className='max-w-7xl mx-auto px-5 md:px-8 lg:px-14'>
-          <div className='flex items-center justify-between mb-4'>
-            <h1 className='text-2xl md:text-3xl font-bold text-gray-800'>
+      <div className='border-b border-[#e3d7c9] bg-[#f1e7dc] py-11 sm:py-14'>
+        <div className='mx-auto max-w-[1450px] px-5 lg:px-10'>
+          <div className='mb-4 flex flex-wrap items-start justify-between gap-4'>
+            <h1 className="text-4xl leading-tight tracking-[-.05em] sm:text-5xl [font-family:Georgia,'Times_New_Roman',serif]">
               {query ? (
                 <>
-                  Search Results for "<span className='text-primary'>{query}</span>"
+                  Search results for “<span className='text-[#a33075]'>{query}</span>”
                 </>
               ) : (
                 'Search Products'
@@ -127,7 +129,8 @@ function SearchResults() {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className='flex items-center gap-2 px-4 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors'
+                type='button'
+                className='inline-flex min-h-10 items-center gap-2 border border-[#d6c7b9] px-4 text-xs font-semibold uppercase tracking-[.08em] text-[#685b51] transition-colors hover:bg-white'
               >
                 <IoClose className='w-4 h-4' />
                 Clear Filters
@@ -136,25 +139,30 @@ function SearchResults() {
           </div>
 
           {/* Results Count */}
-          <div className='flex items-center justify-between text-sm text-gray-600'>
+          <div className='flex flex-wrap items-center justify-between gap-3 text-sm text-[#685b51]'>
             <p>
               {data?.totalCount ? (
                 <>
-                  Found <span className='font-semibold text-primary'>{data.totalCount}</span> product{data.totalCount !== 1 ? 's' : ''}
+                  Found <span className='font-semibold text-[#a33075]'>{data.totalCount}</span> product{data.totalCount !== 1 ? 's' : ''}
                 </>
               ) : (
                 'No products found'
               )}
             </p>
             {hasActiveFilters && (
-              <div className='flex items-center gap-2 flex-wrap'>
+              <div className='flex flex-wrap items-center gap-2'>
                 {filters.category && (
-                  <span className='px-2 py-1 bg-primary/10 text-primary rounded text-xs'>
-                    Category Filtered
+                  <span className='border border-[#dfbfd0] bg-[#f6e8ef] px-2.5 py-1 text-xs text-[#8f215f]'>
+                    {categories?.find(category => category.id === filters.category)?.categoryName || 'Category selected'}
+                  </span>
+                )}
+                {filters.region && (
+                  <span className='border border-[#dfbfd0] bg-[#f6e8ef] px-2.5 py-1 text-xs text-[#8f215f]'>
+                    {regions?.find(region => region.id === filters.region)?.regionName || 'Brand selected'}
                   </span>
                 )}
                 {(filters.priceRange[0] > 0 || filters.priceRange[1] < 600000) && (
-                  <span className='px-2 py-1 bg-primary/10 text-primary rounded text-xs'>
+                  <span className='border border-[#dfbfd0] bg-[#f6e8ef] px-2.5 py-1 text-xs text-[#8f215f]'>
                     Price: ₦{filters.priceRange[0].toLocaleString()} - ₦{filters.priceRange[1].toLocaleString()}
                   </span>
                 )}
@@ -165,50 +173,26 @@ function SearchResults() {
       </div>
 
       {/* Main Content */}
-      <div className='w-full lg:h-screen 2xl:w-[80%] mx-auto flex items-start gap-5 lg:px-10'>
-        {/* Desktop Filters */}
-        <div className='lg:w-[441px] hidden lg:flex flex-col p-3'>
-          <h1>Filters</h1>
-          <div className='w-full my-2'>
-            <div className='w-full flex items-center justify-between text-primary font-semibold'>
-              <p>Categories</p>
-              <p onClick={() => handleFilterChange({ category: '' })}>Reset</p>
-            </div>
-            <hr className='h-[1px] bg-black/70' />
-            <div className='w-full flex flex-col gap-2 my-2'>
-              {categories?.map((category) => (
-                <div key={category.id} className='w-full flex items-center justify-between'>
-                  <p>{category.categoryName}</p>
-                  <input
-                    onChange={() => handleFilterChange({ category: category.id })}
-                    checked={filters.category === category.id}
-                    type='checkbox'
-                    className='bg-gray-200 w-4 h-4'
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className='w-full my-5'>
-            <div className='w-full flex items-center justify-between text-primary font-semibold'>
-              <p>Price Range</p>
-            </div>
-            <hr className='h-[1px] bg-black/70' />
-            <RangeSlider min={0} max={600000} step={1} onChange={handlePriceChange} />
-          </div>
-        </div>
+      <div className='mx-auto flex w-full max-w-[1450px] items-start gap-7 px-5 py-10 lg:px-10'>
+        <CatalogFilters
+          categories={categories || []}
+          regions={regions || []}
+          filters={filters}
+          onChange={handleFilterChange}
+          onPriceChange={handlePriceChange}
+          onClearAll={clearFilters}
+        />
 
         {/* Products Area */}
-        <div className='w-full h-full flex flex-col mb-10'>
-          <div className='w-full h-full flex flex-col md:grid md:grid-cols-3 lg:flex lg:flex-row lg:items-start items-center lg:flex-wrap gap-3 2xl:gap-8 py-6 px-5 lg:px-0 md:mx-auto relative'>
+        <div className='mb-10 flex min-w-0 flex-1 flex-col'>
+          <div className='relative grid w-full grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3'>
             {/* Mobile Filter Button */}
-            <div className='lg:hidden sticky top-3 z-40 w-1/2 h-[40px] px-6 flex items-center justify-center gap-3 bg-primary text-white rounded-md font-semibold place-self-start' onClick={() => setOpenMenu(!openMenu)}>
+            <button type='button' className='col-span-full mb-2 flex min-h-11 w-max items-center gap-3 border border-[#30251f] bg-[#30251f] px-5 text-sm font-medium text-white lg:hidden' onClick={() => setOpenMenu(true)}>
               <IoFilter className='text-white w-5 h-5' />
-              Filters
-            </div>
+              Filters {activeFilterCount > 0 && <span className='grid size-5 place-items-center bg-[#f83dbe] text-[10px] text-[#30251f]'>{activeFilterCount}</span>}
+            </button>
 
-            {data?.products?.length > 0 ? (
+            {isLoading ? <p role='status' className='col-span-full border border-[#e3d7c9] bg-white p-8 text-sm text-[#685b51]'>Searching the collection…</p> : isError ? <p role='alert' className='col-span-full border border-[#e3d7c9] bg-white p-8 text-sm text-[#685b51]'>Search results could not be loaded. Please try again in a moment.</p> : data?.products?.length > 0 ? (
               <>
                 <AnimatePresence mode='sync'>
                   {data.products.map((product, index) => (
@@ -222,7 +206,7 @@ function SearchResults() {
                       transition={{ duration: .3, ease: "linear" }}
                       key={product.id}
                       custom={index}
-                      className='w-full lg:w-max sticky lg:static top-10'
+                      className='h-full min-w-0'
                     >
                       <ProductCard key={product.id} {...product} />
                     </motion.div>
@@ -230,17 +214,18 @@ function SearchResults() {
                 </AnimatePresence>
               </>
             ) : (
-              <div className='w-full bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center'>
-                <Search className='w-16 h-16 text-gray-300 mx-auto mb-4' />
-                <h3 className='text-xl font-semibold text-gray-800 mb-2'>No products found</h3>
-                <p className='text-gray-600 mb-6'>
+              <div className='col-span-full w-full border border-[#e3d7c9] bg-[#f1e7dc] px-7 py-12 sm:px-12 sm:py-16'>
+                <Search className='mb-5 size-9 text-[#a33075]' strokeWidth={1.5} />
+                <h3 className="mb-3 text-3xl tracking-[-.045em] text-[#30251f] [font-family:Georgia,'Times_New_Roman',serif]">No products found.</h3>
+                <p className='mb-6 max-w-md text-sm leading-7 text-[#685b51]'>
                   {query
                     ? `We couldn't find any products matching "${query}". Try adjusting your filters or search term.`
                     : 'Start searching to find products.'}
                 </p>
                 <button
                   onClick={clearFilters}
-                  className='px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors'
+                  type='button'
+                  className='min-h-11 bg-[#30251f] px-6 text-sm font-medium text-white transition-colors hover:bg-[#a33075]'
                 >
                   Clear Filters
                 </button>
@@ -248,7 +233,7 @@ function SearchResults() {
             )}
           </div>
 
-          <ReactPaginate
+          {data?.totalCount > filters.pageSize && <ReactPaginate
             previousLabel="←"
             nextLabel="→"
             pageCount={Math.ceil(data?.totalCount / filters.pageSize)}
@@ -259,50 +244,26 @@ function SearchResults() {
             disableInitialCallback={true}
             marginPagesDisplayed={1}
             pageRangeDisplayed={isMobile ? 2 : 5}
-          />
+          />}
         </div>
       </div>
 
-      {/* Mobile Filter Sheet */}
       <Sheet open={openMenu} onOpenChange={setOpenMenu}>
-        <SheetContent side='left'>
-          <div className='p-3'>
-            <h1>Filters</h1>
-            <div className='w-full my-2'>
-              <div className='w-full flex items-center justify-between text-primary font-semibold'>
-                <p>Categories</p>
-                <p onClick={() => handleFilterChange({ category: '' })}>Reset</p>
-              </div>
-              <hr className='h-[1px] bg-black/70' />
-              <div className='w-full flex flex-col gap-2 my-2'>
-                {categories?.map((category) => (
-                  <div key={category.id} className='w-full flex items-center justify-between'>
-                    <p>{category.categoryName}</p>
-                    <input
-                      onChange={() => handleFilterChange({ category: category.id })}
-                      checked={filters.category === category.id}
-                      type='checkbox'
-                      className='bg-gray-200 w-4 h-4'
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className='w-full my-5'>
-              <div className='w-full flex items-center justify-between text-primary font-semibold'>
-                <p>Price Range</p>
-                <p className='cursor-pointer' onClick={() => handlePriceChange(0, 600000)}>Reset</p>
-              </div>
-              <hr className='h-[1px] bg-black/70' />
-              <RangeSlider min={0} max={600000} step={10} onChange={handlePriceChange} />
-            </div>
-          </div>
+        <SheetContent side='left' className='w-[min(92vw,380px)] border-[#e4d8ca] p-0 sm:max-w-[380px]'>
+          <CatalogFilters
+            mobile
+            categories={categories || []}
+            regions={regions || []}
+            filters={filters}
+            onChange={handleFilterChange}
+            onPriceChange={handlePriceChange}
+            onClearAll={clearFilters}
+            onDone={() => setOpenMenu(false)}
+          />
         </SheetContent>
       </Sheet>
-    </div>
+    </main>
   )
 }
 
 export default SearchResults
-

@@ -1,102 +1,64 @@
-import React from 'react'
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel"
+import { Link, useParams } from 'react-router'
+import { useDispatch, useSelector } from 'react-redux'
+import { ArrowLeft, ArrowUpRight, Check, Plus } from 'lucide-react'
+import Autoplay from 'embla-carousel-autoplay'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import ProductCard from '@/components/ProductCard'
-import Autoplay from "embla-carousel-autoplay";
-import delivery from "/src/assets/delivery.svg";
-import group from "/src/assets/Group.svg";
-import { useParams } from 'react-router';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '@/app/features/cartSlice';
-import { useGetProductsByCategoryQuery, useGetSingleProductQuery } from '@/app/features/api/productApiSlice';
+import { addToCart, selectCartItems } from '@/app/features/cartSlice'
+import { useGetProductsByCategoryQuery, useGetSingleProductQuery } from '@/app/features/api/productApiSlice'
+
+const money = amount => Number(amount).toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })
 
 function SingleProducts() {
-    const params = useParams()
-    const dispatch = useDispatch()
-    const { data: sp } = useGetSingleProductQuery(parseInt(params.id))
-    const { data } = useGetProductsByCategoryQuery(sp?.productCategory)
+  const { id } = useParams()
+  const dispatch = useDispatch()
+  const { data: product } = useGetSingleProductQuery(Number(id))
+  const { data: relatedProducts } = useGetProductsByCategoryQuery(product?.productCategory, { skip: !product?.productCategory })
+  const isInCart = useSelector(state => selectCartItems(state).some(item => item.id === product?.id))
+  const hasPreviousPrice = Number(product?.discountedPrice) > Number(product?.productPrice)
 
-    const addProduct = (product) => {
-        dispatch(addToCart({ ...product }))
-    }
-
-
-    return (
-        <div className='w-full 2xl:w-[70%] lg:mx-auto lg:w-[80%] lg:px-10 px-6 '>
-
-            <div className='flex flex-col items-center justify-center my-24 lg:flex-row gap-24'>
-                <div className='border border-black/50 w-full h-[500px] flex items-center justify-center lg:w-[450px] lg:h-[500px] md:w-[600px] md:h-[619px] 2xl:w-[730px] 2xl:h-[619px]'>
-                    <img src={sp?.productImage} alt="" className='w-full h-full object-cover aspect-auto' />
-                </div>
-                <div className='flex flex-col justify-center items-start gap-1 md:w-[600px] lg:w-[400px]'>
-                    <h1 className='font-bold text-2xl'>{sp?.productName}</h1>
-                    <div className='flex items-center justify-center gap-1'>
-                        <p className='text-base text-primary'>{sp?.productPrice.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })}</p>
-
-                        {/* <p className='text-primary text-sm line-through'>₦{(sp?.productPrice + sp?.discountedPrice).toFixed(2)}</p> */}
-                    </div>
-                    <p className='border-b border-black/50 text-xs pb-2'>{sp?.productDescription}</p>
-                    <div className='w-full mt-3 flex gap-4 items-center'>
-                        <button onClick={() => addProduct(sp)} className='w-full bg-primary px-6 h-9 rounded-sm shadow-md text-white flex items-center justify-center cursor-pointer'>
-                            Add to Cart
-                        </button>
-                    </div>
-                    <div className='border border-black/50 w-full h-40 rounded-xl mt-6 '>
-                        <div className='border-b border-black/50 h-[50%] flex'>
-                            <img src={delivery} alt="" className='py-4 px-2' />
-                            <div className='flex items-staet justify-center flex-col'>
-                                <p className='tet-sm font-semibold'>Door Step Delivery</p>
-                                <p className='text-xs font-semibold'>Enter your postal code for Delivery Availability</p>
-                            </div>
-                        </div>
-                        <div className='flex'>
-                            <img src={group} alt="" className='p-4' />
-                            <div className='flex items-staet justify-center flex-col'>
-                                <p className='tet-sm font-semibold'>24 x 7 Service</p>
-                                <p className='text-xs font-semibold'>Receive round the clock service on this product</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  return (
+    <main className="min-h-screen bg-[#f9f6f1] pt-28 text-[#30251f]">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <Link to="/shop" className="mb-7 inline-flex items-center gap-2 text-xs font-semibold tracking-[.12em] uppercase text-[#a33075] hover:underline focus-visible:outline-2 focus-visible:outline-[#a33075]"><ArrowLeft size={15} /> Back to shop</Link>
+        {product ? (
+          <div className="grid gap-9 lg:grid-cols-2 lg:gap-16">
+            <div className="aspect-[4/4.5] overflow-hidden border border-[#e3d7c9] bg-[#eee5db] sm:aspect-square">
+              <img src={product.productImage} alt={product.productName} className="h-full w-full object-cover" />
             </div>
-
-            <div className=''>
-                <div className='w-full mb-10'>
-                    <div className='flex gap-3 items-center justify-start mx-4'>
-                        <div className='md:h-14 md:w-6 h-9 w-3 bg-primary rounded-xs md:rounded-sm'></div>
-                        <h1 className='font-semibold text-primary text-lg lg:text-xl'>Related Items</h1>
-                    </div>
-
-                    <div className='w-full my-5 '>
-                        <Carousel opts={{
-                            align: "start",
-                            loop: true,
-                        }}
-                            plugins={[
-                                Autoplay({
-                                    delay: 4000,
-                                }),
-                            ]} className='lg:w-[95%] mb-10 mx-auto'>
-                            <CarouselContent>
-                                {data?.slice(0, 5).map((product, index) => (
-                                    <CarouselItem key={index} className='basis-2/3 md:basis-1/3 lg:basis-1/4 2xl:basis-2/6 '>
-                                        <ProductCard {...product} />
-                                    </CarouselItem>
-                                ))}
-                            </CarouselContent>
-                            <CarouselNext className='hidden lg:flex bg-primary text-white' />
-                            <CarouselPrevious className='hidden lg:flex bg-primary/80 text-white' />
-                        </Carousel>
-                    </div>
-                </div>
+            <div className="flex flex-col justify-center pb-4">
+              <p className="mb-5 text-[11px] font-semibold tracking-[.22em] uppercase text-[#a33075]">The fragrance collection</p>
+              <h1 className="max-w-xl text-[clamp(2.75rem,5vw,5rem)] leading-[.98] tracking-[-.055em] [font-family:Georgia,'Times_New_Roman',serif]">{product.productName}</h1>
+              <div className="mt-6 flex flex-wrap items-baseline gap-4">
+                <span className="text-2xl font-semibold">{money(product.productPrice)}</span>
+                {hasPreviousPrice && <del className="text-sm text-[#8b7d72]">{money(product.discountedPrice)}</del>}
+              </div>
+              <div className="mt-8 border-t border-[#d9cec0] pt-7 text-sm leading-7 text-[#62564e]">{product.productDescription}</div>
+              <button type="button" disabled={isInCart} onClick={() => dispatch(addToCart({ productImage: product.productImage, productName: product.productName, productPrice: product.productPrice, id: product.id }))} className="mt-9 inline-flex min-h-12 w-full items-center justify-center gap-3 border border-[#30251f] bg-[#30251f] px-6 text-sm font-medium text-white transition-colors hover:bg-[#50372f] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a33075] disabled:cursor-not-allowed disabled:border-[#c9c2bb] disabled:bg-[#e6e2dd] disabled:text-[#716b65] sm:w-max">
+                {isInCart ? <Check size={18} /> : <Plus size={18} />} {isInCart ? 'In cart' : 'Add to cart'}
+              </button>
+              <div className="mt-10 grid gap-4 border-t border-[#d9cec0] pt-6 text-sm text-[#62564e] sm:grid-cols-2">
+                <p>Need help choosing? We are here to help.</p>
+                <Link to="/contact" className="inline-flex items-center gap-2 font-medium text-[#a33075] hover:underline">Ask us a question <ArrowUpRight size={16} /></Link>
+              </div>
             </div>
-        </div>
-    )
+          </div>
+        ) : <div className="min-h-80 bg-[#eee5db]" aria-label="Loading product" />}
+        {relatedProducts?.length > 0 && (
+          <section className="border-t border-[#ded2c5] py-20 lg:mt-24" aria-labelledby="related-heading">
+            <div className="mb-8 flex items-end justify-between gap-4"><div><p className="mb-3 text-[11px] font-semibold tracking-[.2em] uppercase text-[#a33075]">More to discover</p><h2 id="related-heading" className="text-4xl tracking-[-.05em] sm:text-5xl [font-family:Georgia,'Times_New_Roman',serif]">Related scents.</h2></div></div>
+            <Carousel opts={{ align: 'start', loop: true }} plugins={[Autoplay({ delay: 4000 })]} className="mx-auto w-full">
+              <CarouselContent>
+                {relatedProducts.filter(item => item.id !== product?.id).slice(0, 5).map(item => <CarouselItem key={item.id} className="basis-[78%] sm:basis-1/2 lg:basis-1/4"><ProductCard {...item} /></CarouselItem>)}
+              </CarouselContent>
+              <CarouselNext className="hidden border-[#30251f] bg-[#30251f] text-white lg:flex" />
+              <CarouselPrevious className="hidden border-[#30251f] bg-[#30251f] text-white lg:flex" />
+            </Carousel>
+          </section>
+        )}
+      </div>
+    </main>
+  )
 }
 
 export default SingleProducts

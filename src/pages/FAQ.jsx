@@ -1,4 +1,4 @@
-import React from 'react'
+import PageIntro from '@/components/PageIntro'
 import {
   Accordion,
   AccordionContent,
@@ -35,27 +35,20 @@ const FAQ = () => {
   ]
 
   return (
-    <div className='w-full max-w-4xl mx-auto px-5 md:px-8 lg:px-14 py-24 lg:py-32 md:py-14 2xl:px-24 2xl:py-24'>
-      <h1 className='font-bold text-3xl md:text-4xl text-center text-primary mb-4 md:mb-8'>
-        Frequently Asked Questions
-      </h1>
-
-      <p className='text-center text-base md:text-lg text-gray-600 mb-8 md:mb-12'>
-        Find answers to common questions about our products and services
-      </p>
-
-      <div className='w-full'>
+    <main className='min-h-screen bg-[#f9f6f1] text-[#30251f]'>
+      <PageIntro eyebrow='Good to know / FAQ' title='A few things you may be wondering.' description='Find answers about our fragrances, orders, and delivery.' />
+      <div className='mx-auto max-w-4xl px-5 py-14 sm:px-8 sm:py-20'>
         <Accordion type="single" collapsible className="w-full space-y-3 md:space-y-4">
           {faqs.map((faq, index) => (
             <AccordionItem
               key={index}
               value={`item-${index}`}
-              className="border border-primary/20 rounded-lg px-4 md:px-6 bg-white shadow-sm hover:shadow-md hover:border-primary/40 transition-all"
+              className="border border-[#e3d7c9] bg-white px-5 transition-colors hover:border-[#c9aa97] md:px-7"
             >
-              <AccordionTrigger className="text-left text-base md:text-lg font-semibold text-primary hover:text-primary/80 py-4 md:py-5 [&[data-state=open]]:text-primary">
+              <AccordionTrigger className="py-5 text-left text-base font-medium text-[#30251f] hover:text-[#a33075] md:py-6 md:text-lg [&[data-state=open]]:text-[#a33075]">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-sm md:text-base text-gray-700 leading-relaxed pb-4 md:pb-5">
+              <AccordionContent className="pb-5 text-sm leading-7 text-[#685b51] md:text-base">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>
@@ -63,17 +56,15 @@ const FAQ = () => {
         </Accordion>
       </div>
 
-      <div className='mt-12 md:mt-16 text-center'>
-        <p className='text-base md:text-lg text-gray-600 mb-4'>
-          Still have questions?
-        </p>
-        <p className='text-sm md:text-base text-gray-500'>
+      <div className='mx-auto max-w-4xl border-t border-[#ded2c5] px-5 py-10 sm:px-8'>
+        <h2 className="text-3xl tracking-[-.04em] [font-family:Georgia,'Times_New_Roman',serif]">Still have questions?</h2>
+        <p className='mt-3 text-sm leading-7 text-[#685b51] md:text-base'>
           Feel free to reach out to us via{' '}
           <a
             href="https://www.instagram.com/matrix_scents"
             target="_blank"
             rel="noopener noreferrer"
-            className='text-primary hover:underline font-semibold'
+            className='font-semibold text-[#a33075] hover:underline'
           >
             Instagram
           </a>
@@ -82,15 +73,14 @@ const FAQ = () => {
             href="https://wa.me/2348060119051"
             target="_blank"
             rel="noopener noreferrer"
-            className='text-primary hover:underline font-semibold'
+            className='font-semibold text-[#a33075] hover:underline'
           >
             WhatsApp
           </a>
         </p>
       </div>
-    </div>
+    </main>
   )
 }
 
 export default FAQ
-

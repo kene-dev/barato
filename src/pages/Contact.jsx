@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import PageIntro from '@/components/PageIntro'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -15,7 +16,7 @@ import {
 } from 'lucide-react'
 
 // FormSpree endpoint - Replace with your FormSpree form ID
-// 
+//
 // To set up FormSpree:
 // 1. Go to https://formspree.io/ and create a free account
 // 2. Create a new form and get your form ID
@@ -107,20 +108,10 @@ const Contact = () => {
   ]
 
   return (
-    <div className='w-full min-h-screen bg-gradient-to-br from-gray-50 to-white'>
-      {/* Hero Section */}
-      <div className='w-full bg-primary/5 py-24 md:py-16 lg:py-24'>
-        <div className='max-w-7xl mx-auto px-5 md:px-8 lg:px-14 text-center'>
-          <h1 className='font-bold text-4xl md:text-5xl lg:text-6xl text-primary mb-4'>
-            Get In Touch
-          </h1>
-          <p className='text-lg md:text-xl text-gray-600 max-w-2xl mx-auto'>
-            Have a question or need help? We're here for you. Reach out and we'll respond as soon as possible.
-          </p>
-        </div>
-      </div>
+    <main className='min-h-screen bg-[#f9f6f1] text-[#30251f]'>
+      <PageIntro eyebrow='Reach out / Matrix Scents' title='Let’s talk fragrance.' description='Questions, recommendations, or order help? We would love to hear from you.' />
 
-      <div className='max-w-7xl mx-auto px-5 md:px-8 lg:px-14 py-10 md:py-16'>
+      <div className='mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10 lg:py-20'>
         {/* Contact Info Cards */}
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12 md:mb-16'>
           {contactInfo.map((info, index) => {
@@ -131,14 +122,14 @@ const Contact = () => {
                 href={info.link}
                 target={info.link.startsWith('http') ? '_blank' : undefined}
                 rel={info.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className='group relative overflow-hidden bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 hover:border-primary/30'
+                className='group relative border border-[#e3d7c9] bg-white p-6 transition-colors hover:border-[#bc9c8f] focus-visible:outline-2 focus-visible:outline-[#a33075]'
               >
-                <div className={`w-12 h-12 ${info.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                <div className='mb-5 grid size-11 place-items-center bg-[#f6e9f1] text-[#a33075]'>
                   <Icon className='w-6 h-6' />
                 </div>
-                <h3 className='font-semibold text-lg text-gray-800 mb-2'>{info.title}</h3>
-                <p className='text-sm text-gray-600 group-hover:text-primary transition-colors'>{info.content}</p>
-                <div className='absolute bottom-0 left-0 w-full h-1 bg-primary/0 group-hover:bg-primary transition-all duration-300'></div>
+                <h3 className='mb-2 text-base font-semibold text-[#30251f]'>{info.title}</h3>
+                <p className='text-sm text-[#685b51] group-hover:text-[#a33075] transition-colors'>{info.content}</p>
+
               </a>
             )
           })}
@@ -147,18 +138,18 @@ const Contact = () => {
         {/* Main Content Grid */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12'>
           {/* Contact Form */}
-          <div className='bg-white rounded-2xl shadow-lg p-6 md:p-8 lg:p-10 border border-gray-100'>
+          <div className='border border-[#e3d7c9] bg-white p-6 md:p-8 lg:p-10'>
             <div className='flex items-center gap-3 mb-6'>
               <div className='w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center'>
                 <MessageSquare className='w-5 h-5 text-primary' />
               </div>
-              <h2 className='text-2xl md:text-3xl font-bold text-gray-800'>Send us a Message</h2>
+              <h2 className="text-3xl tracking-[-.04em] text-[#30251f] [font-family:Georgia,'Times_New_Roman',serif]">Send us a Message</h2>
             </div>
 
             {submitSuccess && (
               <div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-lg'>
                 <p className='text-green-800 text-sm'>
-                  ✓ Your message has been sent successfully! We'll get back to you soon.
+                  ✓ Your message has been sent successfully! We&apos;ll get back to you soon.
                 </p>
               </div>
             )}
@@ -271,7 +262,7 @@ const Contact = () => {
               <Button
                 type='submit'
                 disabled={isSubmitting}
-                className='w-full bg-primary hover:bg-primary/90 text-white font-semibold py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
+                className='w-full rounded-none bg-[#30251f] py-6 text-sm font-semibold text-white hover:bg-[#50372f] disabled:cursor-not-allowed disabled:opacity-50'
               >
                 {isSubmitting ? (
                   <span className='flex items-center justify-center gap-2'>
@@ -291,8 +282,8 @@ const Contact = () => {
           {/* Additional Info Section */}
           <div className='space-y-6'>
             {/* Why Contact Us */}
-            <div className='bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100'>
-              <h3 className='text-xl md:text-2xl font-bold text-gray-800 mb-4'>Why Contact Us?</h3>
+            <div className='border border-[#e3d7c9] bg-white p-6 md:p-8'>
+              <h3 className="mb-4 text-2xl text-[#30251f] [font-family:Georgia,'Times_New_Roman',serif]">Why Contact Us?</h3>
               <ul className='space-y-3 text-gray-600'>
                 <li className='flex items-start gap-3'>
                   <div className='w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5'>
@@ -328,12 +319,12 @@ const Contact = () => {
             </div>
 
             {/* Quick Response */}
-            <div className='bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100'>
+            <div className='border border-[#e3d7c9] bg-white p-6 md:p-8'>
               <div className='flex items-center gap-3 mb-3'>
                 <div className='w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center'>
                   <MessageCircle className='w-6 h-6 text-primary' />
                 </div>
-                <h3 className='text-xl font-bold text-gray-800'>Quick Response</h3>
+                <h3 className="text-2xl text-[#30251f] [font-family:Georgia,'Times_New_Roman',serif]">Quick Response</h3>
               </div>
               <p className='text-gray-600 text-sm leading-relaxed'>
                 We typically respond to all inquiries within 24 hours during business days.
@@ -343,9 +334,8 @@ const Contact = () => {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 
 export default Contact
-

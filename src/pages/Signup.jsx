@@ -1,7 +1,7 @@
 import { useSignUpUserMutation } from '@/app/features/api/authApiSlice';
 import supabase from '@/app/supabaseClient';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
 import { FiEye } from "react-icons/fi";
 import { useSelector } from 'react-redux';
@@ -17,7 +17,7 @@ const signupSchema = z.object({
 
 const Signup = () => {
   const [signUpUser, {isLoading}] = useSignUpUserMutation()
-  const {register, handleSubmit,reset, formState:{errors,isSubmitting}} = useForm({
+  const {register, handleSubmit,reset, formState:{errors}} = useForm({
           resolver: zodResolver(signupSchema)
   })
   const isOnline = useSelector(state => state.persistedReducer.auth.user)
@@ -43,7 +43,7 @@ const Signup = () => {
 
   console.log("USER DETAILS: ", userDetails)
 
-  const {data: newUser, error:newUserError} = await signUpUser(userDetails)
+  const {error:newUserError} = await signUpUser(userDetails)
 
   if(newUserError) throw newUserError
   
@@ -57,33 +57,33 @@ useEffect(() => {
   if(isOnline){
     navigate('/')
   }
-},[isOnline])
+},[isOnline, navigate])
 
 
   return (
-    <div className='px-5 w-screen flex flex-col justify-center items-center my-[100px] lg:flex-row gap-6'>
-      <form onSubmit={handleSubmit(onSubmit)} className='w-full border-[1px] border-black/30 rounded-md shadow-xs p-6 md:w-[400px]'>
-        <h1 className='font-semibold text-2xl mb-1'>Create Account</h1>
+    <div className='min-h-[calc(100vh-5rem)] w-full bg-[#f9f6f1] px-5 pt-32 pb-16 flex flex-col justify-center items-center lg:flex-row gap-8'>
+      <form onSubmit={handleSubmit(onSubmit)} className='w-full border border-[#e3d7c9] bg-white p-7 shadow-[6px_6px_0_#e5d5c5] md:w-[400px]'>
+        <h1 className="mb-2 text-3xl tracking-[-.04em] text-[#30251f] [font-family:Georgia,'Times_New_Roman',serif]">Create Account</h1>
         <p className='text-xs text-gray-500 mb-5'>Please register your details</p>
         <div className='flex flex-col gap-7'>
           <input {...register('firstName')} className='border border-gray rounded-sm shadow-xs h-10 p-3 placeholder:text-xs ' type="text" name="firstName" id="" placeholder='First Name' />
            {errors.firstName && (<p className="-mt-5 text-red-500 text-sm">{errors.firstName.message}</p>)}
 
 
-          <input {...register('lastName')} className='border border-gray rounded-sm shadow-xs h-10 p-3 placeholder:text-xs' type="text" name='lastName' id='' placeholder='Last Name' />
+          <input {...register('lastName')} className='min-h-12 w-full border border-[#d8c9ba] bg-white px-4 text-sm outline-none placeholder:text-[#92877e] focus:border-[#a33075]' type="text" name='lastName' id='' placeholder='Last Name' />
            {errors.lastName && (<p className="-mt-5 text-red-500 text-sm">{errors.lastName.message}</p>)}
 
-          <input {...register('email')} className='border border-gray rounded-sm shadow-xs h-10 p-3 placeholder:text-xs' type="email" name="email" placeholder='Email' />
+          <input {...register('email')} className='min-h-12 w-full border border-[#d8c9ba] bg-white px-4 text-sm outline-none placeholder:text-[#92877e] focus:border-[#a33075]' type="email" name="email" placeholder='Email' />
           {errors.email && (<p className="-mt-5 text-red-500 text-sm">{errors.email.message}</p>)}
 
           <div className='relative'>
-            <input {...register('password')} className='w-full border border-gray rounded-sm shadow-xs h-10 p-3 placeholder:text-xs' type="text" name="password" id="" placeholder='Password' />
+            <input {...register('password')} className='min-h-12 w-full border border-[#d8c9ba] bg-white px-4 text-sm outline-none placeholder:text-[#92877e] focus:border-[#a33075]' type="password" name="password" id="" placeholder='Password' />
             <FiEye className='absolute right-5 top-3'/>
           </div>
             {errors.password && (<p className="-mt-5 text-red-500 text-sm">{errors.password.message}</p>)}
 
 
-          <button className='bg-primary rounded-sm shadow-lg h-10 text-white flex items-center justify-center font-semibold mb-6'>
+          <button className='flex min-h-12 items-center justify-center bg-[#30251f] px-5 text-sm font-semibold text-white hover:bg-[#50372f]'>
             {isLoading ? (<div className='loader'></div>) : "Sign up"}
            
           </button>

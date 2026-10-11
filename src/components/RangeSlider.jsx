@@ -1,15 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-const RangeSlider = ({ min, max, step = 1, onChange }) => {
-  const [minPrice, setMinPrice] = useState(min);
-  const [maxPrice, setMaxPrice] = useState(max);
-  const containerRef = useRef(null);
+// eslint-disable-next-line react/prop-types
+const RangeSlider = ({ min, max, step = 1, value, onChange }) => {
+  const controlledMin = value?.[0];
+  const controlledMax = value?.[1];
+  const [minPrice, setMinPrice] = useState(controlledMin ?? min);
+  const [maxPrice, setMaxPrice] = useState(controlledMax ?? max);
 
-  // Sync with parent min/max changes
+  // Keep the thumbs in sync when the parent clears a filter.
   useEffect(() => {
-    setMinPrice(min);
-    setMaxPrice(max);
-  }, [min, max]);
+    setMinPrice(controlledMin ?? min);
+    setMaxPrice(controlledMax ?? max);
+  }, [min, max, controlledMin, controlledMax]);
 
   const handleMinChange = (e) => {
     const value = Math.min(Number(e.target.value), maxPrice - step);
@@ -30,25 +32,24 @@ const RangeSlider = ({ min, max, step = 1, onChange }) => {
   };
 
   return (
-    <div className="w-full p-4 bg-white rounded-lg">
-      {/* Value Labels - fixed positioning issues */}
-      <div className="flex justify-between w-full mb-6">
-        <div className="bg-black text-white py-1 px-3 rounded-md text-sm">
-          ₦{minPrice}
+    <div className="w-full">
+      <div className="mb-4 grid grid-cols-2 gap-2">
+        <div className="min-w-0 border border-[#e5d9cc] bg-white px-2 py-2">
+          <span className="block text-[9px] uppercase tracking-[.12em] text-[#8d7c6e]">From</span>
+          <span className="block text-[11px] font-semibold tabular-nums text-[#30251f]">₦{minPrice.toLocaleString('en-NG')}</span>
         </div>
-        <div className="bg-black text-white py-1 px-3 rounded-md text-sm">
-          ₦{maxPrice}
+        <div className="min-w-0 border border-[#e5d9cc] bg-white px-2 py-2">
+          <span className="block text-[9px] uppercase tracking-[.12em] text-[#8d7c6e]">To</span>
+          <span className="block text-[11px] font-semibold tabular-nums text-[#30251f]">₦{maxPrice.toLocaleString('en-NG')}</span>
         </div>
       </div>
 
-      {/* Slider Track Container */}
-      <div className="relative w-full h-8" ref={containerRef}>
-        {/* Background Track */}
-        <div className="absolute top-1/2 left-0 right-0 h-1.5 bg-gray-300 rounded-full -translate-y-1/2" />
+      <div className="relative h-8 w-full">
+        <div className="absolute top-1/2 right-0 left-0 h-1 -translate-y-1/2 bg-[#ded4c9]" />
         
         {/* Active Progress Bar */}
         <div
-          className="absolute top-1/2 h-1.5 bg-primary rounded-full -translate-y-1/2 z-10"
+          className="absolute top-1/2 z-10 h-1 -translate-y-1/2 bg-[#a33075]"
           style={progressStyle}
         />
         
@@ -60,18 +61,19 @@ const RangeSlider = ({ min, max, step = 1, onChange }) => {
           step={step}
           value={minPrice}
           onChange={handleMinChange}
+          aria-label="Minimum price"
           className="absolute w-full h-full appearance-none bg-transparent pointer-events-none z-20
             [&::-webkit-slider-thumb]:appearance-none 
             [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white 
-            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary 
+            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#a33075]
             [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto
             [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:active:scale-125
             
             [&::-moz-range-thumb]:appearance-none 
             [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white 
-            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary 
+            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-[#a33075]
             [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:pointer-events-auto
             [&::-moz-range-thumb]:shadow-lg [&::-moz-range-thumb]:active:scale-125"
         />
@@ -84,18 +86,19 @@ const RangeSlider = ({ min, max, step = 1, onChange }) => {
           step={step}
           value={maxPrice}
           onChange={handleMaxChange}
+          aria-label="Maximum price"
           className="absolute w-full h-full appearance-none bg-transparent pointer-events-none z-30
             [&::-webkit-slider-thumb]:appearance-none 
             [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white 
-            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-primary 
+            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#a33075]
             [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto
             [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:active:scale-125
             
             [&::-moz-range-thumb]:appearance-none 
             [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 
             [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white 
-            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-primary 
+            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-[#a33075]
             [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:pointer-events-auto
             [&::-moz-range-thumb]:shadow-lg [&::-moz-range-thumb]:active:scale-125"
         />

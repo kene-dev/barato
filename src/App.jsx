@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router"
 import Layout from "./pages/Layout"
-import Home from "./pages/Home"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import ForgotPassword from "./pages/ForgotPassword"
 import ResetPassword from "./pages/ResetPassword"
 import Shop from "./pages/Shop"
+import Sales from "./pages/Sales"
 import SingleProducts from "./pages/SingleProducts"
 import About from "./pages/About"
 import Cart from "./pages/Cart"
@@ -46,7 +46,7 @@ function App() {
 
         // Handle authenticated states
         if (session?.user) {
-          console.log(session)
+          // console.log(session)
           dispatch(setAuthState({ id: session.user.id }));
 
         }
@@ -76,6 +76,7 @@ function App() {
 
         {/* PUBLIC ROUTES */}
         <Route path="shop" element={<Shop />} />
+        <Route path="sales" element={<Sales />} />
         <Route path="shop/:id" element={<SingleProducts />} />
         <Route path="about" element={<About />} />
         <Route path="cart" element={<Cart />} />

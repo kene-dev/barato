@@ -18,7 +18,7 @@ import { apiSlice } from './features/api/apiSlice';
 const persistConfig = {
   key: 'barato',
   storage,
-  whitelist: ['cart', 'auth'] // only persist cartItems
+  whitelist: ['cart', 'auth']
 };
 
   // Combine reducers

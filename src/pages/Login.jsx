@@ -1,11 +1,10 @@
-import { useSignInUserMutation, useSignUpUserMutation } from '@/app/features/api/authApiSlice';
-import supabase from '@/app/supabaseClient';
+import { useSignInUserMutation } from '@/app/features/api/authApiSlice';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { FiEye } from "react-icons/fi";
 import { useSelector } from 'react-redux';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 
@@ -19,7 +18,7 @@ const signInSchema = z.object({
 
 const Login = () => {
   const [signInUser, {isLoading}] = useSignInUserMutation()
-  const {register, handleSubmit,reset, formState:{errors,isSubmitting}} = useForm({
+  const {register, handleSubmit,reset, formState:{errors}} = useForm({
         resolver: zodResolver(signInSchema)
   })
   const [hide, setHide] = useState(true);
@@ -29,7 +28,7 @@ const Login = () => {
 
   const onSubmit = async (formData) => {
       try {
-     const response = await signInUser(formData).unwrap();
+     await signInUser(formData).unwrap();
       reset()
     } catch (error) {
       toast.error(error.data)
@@ -41,27 +40,27 @@ useEffect(() => {
   if(isOnline){
     navigate('/')
   }
-},[isOnline])
+},[isOnline, navigate])
 
 
   return (
-    <div className='px-5 w-screen flex flex-col justify-center items-center my-[100px] lg:flex-row gap-6'>
+    <div className='min-h-[calc(100vh-5rem)] w-full bg-[#f9f6f1] px-5 pt-32 pb-16 flex flex-col justify-center items-center lg:flex-row gap-8'>
 
-      <form onSubmit={handleSubmit(onSubmit)} className='border-[1px] border-black/30 rounded-md shadow-xs p-6 w-full md:w-[400px]'>
-        <h1 className='font-semibold text-2xl mb-1'>Login</h1>
+      <form onSubmit={handleSubmit(onSubmit)} className='border border-[#e3d7c9] bg-white p-7 shadow-[6px_6px_0_#e5d5c5] w-full md:w-[400px]'>
+        <h1 className="mb-2 text-3xl tracking-[-.04em] text-[#30251f] [font-family:Georgia,'Times_New_Roman',serif]">Login</h1>
         <p className='text-xs text-gray-500 mb-5'>Please login below</p>
         <div className='flex flex-col gap-7'>
-          <input {...register('email')} className='border border-gray rounded-sm shadow-xs h-10 p-3 placeholder:text-xs' type="text" placeholder='Email' />
+          <input {...register('email')} className='min-h-12 w-full border border-[#d8c9ba] bg-white px-4 text-sm outline-none placeholder:text-[#92877e] focus:border-[#a33075]' type="text" placeholder='Email' />
           {errors.email && (<p className="-mt-5 text-red-500 text-sm">{errors.email.message}</p>)}
 
 
           <div className='relative'>
-            <input {...register('password')} className='w-full border border-gray rounded-sm shadow-xs h-10 p-3 placeholder:text-xs' type={hide ? 'password' : "text"} placeholder='Password' />
+            <input {...register('password')} className='min-h-12 w-full border border-[#d8c9ba] bg-white px-4 text-sm outline-none placeholder:text-[#92877e] focus:border-[#a33075]' type={hide ? 'password' : "text"} placeholder='Password' />
             <FiEye onClick={() => setHide(!hide)} className='absolute right-5 top-3 eye-icon'/>
           </div>
           {errors.password && (<p className="-mt-5 text-red-500 text-sm">{errors.password.message}</p>)}
 
-          <button className='bg-primary rounded-sm shadow-lg h-10 text-white flex items-center justify-center font-semibold'>
+          <button className='flex min-h-12 items-center justify-center bg-[#30251f] px-5 text-sm font-semibold text-white hover:bg-[#50372f]'>
             {isLoading ? (<div className='loader'></div> ) : 'Sign in'}
           </button>
 

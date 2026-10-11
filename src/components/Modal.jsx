@@ -1,35 +1,16 @@
-import React from 'react';
+import { X } from 'lucide-react'
 
-const Modal = ({ handleModal, children, formSize }) => {
-  // Calculate the size class directly without useState
-  const getSizeClass = () => {
-    switch (formSize) {
-      case "sm":
-        return 'h-[40%]';
-      case "md":
-        return 'lg:h-[60%] h-max';
-      case "lg":
-        return 'h-[80%]';
-      default:
-        return 'h-[80%]';
-    }
-  };
+const modalWidths = { sm: 'max-w-md', md: 'max-w-xl', lg: 'max-w-3xl' }
 
-  const sizeClass = getSizeClass();
-
-  return (
-    <div 
-      onClick={() => handleModal(false)} 
-      className='w-full fixed inset-0 bg-black/70 flex items-center justify-center px-5 z-50' 
-    >
-      <div 
-        onClick={(e) => e.stopPropagation()}  
-        className={`lg:w-3/5 w-full ${sizeClass} overflow-y-scroll bg-white rounded-md p-6 py-10 lg:px-16 flex flex-col gap-5 items-center justify-center relative z-10`}
-      >
-        {children}
-      </div>
+// These layout-only props follow the app's existing untyped component pattern.
+// eslint-disable-next-line react/prop-types
+const Modal = ({ handleModal, children, formSize = 'md' }) => (
+  <div onMouseDown={() => handleModal(false)} className="fixed inset-0 z-[60] flex items-center justify-center bg-[#1d1612]/70 p-3 backdrop-blur-[2px] sm:p-6">
+    <div role="dialog" aria-modal="true" onMouseDown={event => event.stopPropagation()} className={`relative w-full ${modalWidths[formSize] ?? modalWidths.md} max-h-[90vh] overflow-y-auto border border-[#e2d5c8] bg-[#faf7f2] p-5 shadow-[8px_8px_0_#30251f] sm:p-8`}>
+      <button type="button" onClick={() => handleModal(false)} aria-label="Close dialog" className="absolute top-4 right-4 grid size-9 place-items-center border border-[#d6c6b7] text-[#30251f] hover:bg-[#eee3d8] focus-visible:outline-2 focus-visible:outline-[#a33075]"><X size={18} /></button>
+      {children}
     </div>
-  );
-};
+  </div>
+)
 
-export default Modal;
+export default Modal

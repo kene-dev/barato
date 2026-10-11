@@ -1,27 +1,32 @@
-import React from 'react'
-import logo from '../../assets/logo.png';
-import { adminNavLinks } from '@/lib/navLinks';
-import { Link, useLocation } from 'react-router';
+import { adminNavLinks } from '@/lib/navLinks'
+import { Link, useLocation } from 'react-router'
+import logo from '../../assets/logo.png'
 
-const Sidebar = () => {
-    const {pathname} = useLocation()
+// eslint-disable-next-line react/prop-types
+const Sidebar = ({ compact = false }) => {
+  const { pathname } = useLocation()
+
   return (
-    <div className='w-[356px] h-screen bg-white drop-shadow-lg rounded-[10px] flex flex-col gap-10 items-start lg:px-5 2xl:px-10 '>
-        <Link to='/'>
-            <img src={logo} className='w-[170px] my-3 ' />
+    <nav aria-label="Admin navigation" className={compact ? 'w-full overflow-x-auto border-b border-[#e8ddd2] bg-white px-4 py-3' : 'flex h-full w-full flex-col border-r border-[#e8ddd2] bg-[#faf7f2] px-5 py-7'}>
+      {!compact && (
+        <Link to="/" className="mb-12 inline-flex w-max flex-col gap-3 px-3 focus-visible:outline-2 focus-visible:outline-[#a33075]">
+          <span className="flex items-center gap-3"><img src={logo} alt="" className="size-12 object-contain" /><span className="text-sm font-semibold tracking-wide text-[#30251f]">Matrix Scents</span></span>
+          <span className="text-[10px] font-semibold tracking-[.22em] uppercase text-[#9a766e]">Admin studio</span>
         </Link>
-    
-        <hr className='bg-black h-[1px] w-full -mt-4' />
-        <div className='w-full'>
-            {adminNavLinks.map(link => (
-                <Link key={link.name} to={link.path} className={`${pathname === link.path && 'bg-primary text-white' } w-full h-[61px] my-4 hover:bg-primary hover:text-white rounded-lg text-center flex items-center justify-start  gap-5 shadow-lg px-10`}>
-                    {<link.icon />}
-                    {link.name}
-                </Link>
-            ))}
-        </div>
-
-    </div>
+      )}
+      <div className={compact ? 'flex min-w-max gap-2' : 'flex flex-col gap-2'}>
+        {adminNavLinks.map(link => {
+          const active = pathname === link.path
+          const Icon = link.icon
+          return (
+            <Link key={link.path} to={link.path} aria-current={active ? 'page' : undefined} className={`flex min-h-11 items-center gap-3 px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-[#a33075] ${active ? 'bg-[#30251f] text-white' : 'text-[#63574e] hover:bg-[#eee7df] hover:text-[#30251f]'}`}>
+              <Icon size={18} aria-hidden="true" />{link.name}
+            </Link>
+          )
+        })}
+      </div>
+      {!compact && <p className="mt-auto border-t border-[#ded2c6] pt-5 text-xs text-[#9a766e]">A little care in every detail.</p>}
+    </nav>
   )
 }
 

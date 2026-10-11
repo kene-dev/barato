@@ -1,7 +1,6 @@
 import { useGetUserQuery } from '@/app/features/api/authApiSlice'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux';
-import account from "../assets/account.svg"
 import { MdEmail } from "react-icons/md";
 import OrdersList from '@/components/OrdersList';
 import FavouritesList from '@/components/FavouritesList';
@@ -34,8 +33,8 @@ const ProfilePage = () => {
 
 
   return (
-     <div className='w-screen 2xl:w-[80%] mx-auto min-h-screen lg:h-full flex lg:flex-row flex-col items-start gap-7 px-5 lg:px-10 my-5 '>
-        <div className='w-full lg:max-w-[300px] h-[65%] bg-white drop-shadow-sm rounded-[10px] flex flex-col gap-7 items-start lg:px-5 2xl:px-10 py-10 px-5' >
+     <main className='mx-auto flex min-h-screen w-full max-w-7xl flex-col items-start gap-7 bg-[#f9f6f1] px-5 pt-32 pb-16 text-[#30251f] sm:px-8 lg:flex-row lg:px-10'>
+        <div className='w-full lg:max-w-[300px] border border-[#e3d7c9] bg-white p-6 flex flex-col gap-7 items-start' >
             {user ? (
                 <div className='w-full flex flex-col items-center justify-center'>
                     <div className='w-[100px] h-[100px] rounded-full bg-primary text-white text-4xl font-bold flex items-center justify-center gap-1'>
@@ -62,16 +61,16 @@ const ProfilePage = () => {
             
 
             {tabs?.map((tab, idx) => (
-                <div key={idx} onClick={() => setCurrentTab(tab)}  className={`${tab === currentTab && '!bg-primary text-white font-semibold'} w-full bg-[#F2F2F5] h-[50px] hover:bg-primary capitalize hover:text-white rounded-lg text-center flex items-center justify-start  gap-5 shadow-sm px-9 cursor-pointer`}>
+                <div key={idx} onClick={() => setCurrentTab(tab)}  className={`${tab === currentTab && '!bg-[#30251f] text-white font-semibold'} w-full min-h-11 bg-[#f4eee8] hover:bg-[#30251f] capitalize hover:text-white text-center flex items-center justify-start gap-5 px-5 cursor-pointer`}>
                     {tab}
                 </div>
             ))}
         </div>
 
-        <div className='h-full w-full flex-grow overflow-y-scroll'>
+        <div className='min-w-0 w-full flex-grow'>
             {renderView()}
         </div>
-     </div>
+     </main>
   )
 }
 

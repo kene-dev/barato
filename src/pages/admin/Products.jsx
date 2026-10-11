@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MdAddToPhotos } from "react-icons/md";
 import { GoTrash } from "react-icons/go";
 import {
@@ -23,12 +23,13 @@ import { useGetRegionsQuery } from '@/app/features/api/regionsApiSlice';
 import ReactPaginate from 'react-paginate';
 import { useDispatch } from 'react-redux';
 import { MdModeEditOutline } from "react-icons/md";
+import { Search } from 'lucide-react';
 
 
 const productSchema = z.object({
     productName: z.string().trim().min(1, "Please add a product name"),
     productDescription: z.string().trim().min(1,"Please add a product descripotion"),
-    productPrice: z.coerce.number().min(1, "Please include product price"),
+    productPrice: z.coerce.number().min(1, "Please include a discounted price"),
     discountedPrice: z.coerce.number().optional(),
     productImage: z.any().refine(file => file?.length !== 0, 'Image is required'),
     productCategory: z.coerce.number().min(1, "Category selection is required"),
@@ -39,7 +40,7 @@ const productSchema = z.object({
 const editProductSchema = z.object({
     productName: z.string().trim().min(1, "Please add a product name"),
     productDescription: z.string().trim().min(1,"Please add a product descripotion"),
-    productPrice: z.coerce.number().min(1, "Please include product price"),
+    productPrice: z.coerce.number().min(1, "Please include a discounted price"),
     discountedPrice: z.preprocess((val) => {
         if (val === '' || val === null) return undefined
         return val
@@ -66,7 +67,7 @@ const Products = () => {
     const [deleteProduct,{isLoading:deleteLoading}] = useDeleteProductMutation()
     const dispatch = useDispatch()
 
-    const {register, handleSubmit,reset, formState:{errors,isSubmitting}} = useForm({
+    const {register, handleSubmit,reset, formState:{errors}} = useForm({
         resolver: zodResolver(productSchema)
     })
 
@@ -195,28 +196,37 @@ const Products = () => {
     },[value])
 
   return (
-    <div className='w-full h-screen overflow-y-scroll pt-14 px-5'>
-        <div className='flex flex-col lg:flex-row items-center gap-3 lg:gap-0 justify-between'>
-            <div className='flex items-center gap-5'>
-                <h1 className='font-semibold'>Product List</h1>
-                <input placeholder='search product...' onChange={(e) => setSearchTerm(e.target.value)}  className='appearance-none lg:w-[320px] h-[37px] rounded-xl placeholer:text-xs text-[#121212]/70 border-[1px] border-black/40 px-5' />
+    <div className='w-full min-w-0'>
+        <div className='mb-8 flex flex-col gap-5 border-b border-[#dfd2c5] pb-7 sm:flex-row sm:items-end sm:justify-between'>
+            <div>
+                <p className='mb-2 text-[11px] font-semibold tracking-[.2em] text-[#a33075] uppercase'>Inventory / Products</p>
+                <h1 className="text-4xl leading-tight tracking-[-.05em] sm:text-5xl [font-family:Georgia,'Times_New_Roman',serif]">Product collection</h1>
+                <p className='mt-2 text-sm text-[#776b60]'>Manage the details shoppers see in your store.</p>
             </div>
 
-            <Button onClick={() => setOpenModal(true)} className='lg:w-max w-full h-[40px] px-6 flex items-center gap-3'>
+            <Button onClick={() => setOpenModal(true)} className='min-h-11 w-full gap-2 rounded-none bg-[#30251f] px-5 text-white shadow-[3px_3px_0_#f83dbe] hover:bg-[#50372f] sm:w-auto'>
                 <MdAddToPhotos />
                 Add Product
             </Button>
-        </div>  
+        </div>
 
-            {deleteLoading && <p>DELETING PRODUCT ABEG</p>}
+            <div className='mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+              <p className='text-sm text-[#776b60]'>{data?.totalCount ?? 0} products in your collection</p>
+              <label className='relative block w-full sm:max-w-xs'>
+                <span className='sr-only'>Search products</span>
+                <Search size={17} className='pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[#927f71]' />
+                <input value={searchTerm} placeholder='Search products' onChange={(e) => setSearchTerm(e.target.value)} className='min-h-11 w-full border border-[#d8c9ba] bg-white pr-4 pl-10 text-sm outline-none placeholder:text-[#9b8d81] focus:border-[#a33075]' />
+              </label>
+            </div>
+            {deleteLoading && <p role='status' className='mb-4 text-sm text-[#a33075]'>Deleting product…</p>}
 
-                <div className='w-full lg:w-full h-[70%] overflow-x-scroll mt-10'>
-                    <Table className='lg:w-full h-full w-[600px] mb-5'>
+                <div className='w-full overflow-x-auto border border-[#e4d8cc] bg-white'>
+                    <Table className='min-w-[950px]'>
                         <TableHeader>
-                            <TableRow className='bg-primary hover:bg-primary'>
-                                <TableHead className="text-left text-white">Name</TableHead>
+                            <TableRow className='border-none bg-[#30251f] hover:bg-[#30251f]'>
+                                <TableHead className="w-52 text-left text-white">Name</TableHead>
                                 <TableHead className='text-left text-white'>Image</TableHead>
-                                <TableHead className='text-center text-white'>Price</TableHead>
+                                <TableHead className='text-center text-white'>Discounted price</TableHead>
                                 <TableHead className='text-left text-white'>Description</TableHead>
                                 <TableHead className='text-left text-white'>Category</TableHead>
                                 <TableHead className='text-left text-white'>Region</TableHead>
@@ -226,10 +236,12 @@ const Products = () => {
         
                         <TableBody>
                                 {data?.products?.map(product => (
-                                    <TableRow key={product.id} className='rounded-lg shadow-lg bg-white'>
-                                        <TableCell className="grow w-[40px] lg:w-[250px]">{product.productName} </TableCell>
+                                    <TableRow key={product.id} className='border-b border-[#eee5dc] bg-white hover:bg-[#faf7f2]'>
+                                        <TableCell className="w-52 max-w-52 whitespace-normal font-medium text-[#30251f]">
+                                            <span className='block [overflow-wrap:anywhere]'>{product.productName}</span>
+                                        </TableCell>
                                         <TableCell className=""> 
-                                            <div className="relative lg:w-[70px] w-[80px] aspect-square overflow-hidden">
+                                            <div className="relative size-14 overflow-hidden bg-[#f5f0eb]">
                                                 <img 
                                                 className="w-full h-full object-contain" 
                                                 src={product.productImage} 
@@ -240,14 +252,15 @@ const Products = () => {
 
                                         {/* <TableCell className="basis-5xl"> <img className='w-[300px] basis-5xl lg:h-[47px] h-[300.31px] object-cover' src={product.productImage} /> 
                                         </TableCell> */}
-                                        <TableCell className='grow text-center'><p className='text-center  w-[150px] pr-4'> ₦{product.productPrice} </p></TableCell>
-                                        <TableCell><p className='text-wrap  w-[300px] pr-4'>{product.productDescription}</p> </TableCell>
-                                        <TableCell><p className='text-wrap  w-[200px] pr-4'>{product.categories?.categoryName}</p> </TableCell>
-                                        <TableCell><p className='text-wrap  w-[200px] pr-4'>{product.regions?.regionName}</p> </TableCell>
-                                        <TableCell className='grow w-[250px] h-full flex items-center justify-center gap-3'>
-                                            <GoTrash onClick={() => dispatch(deleteProduct(product.id))}  className='text-primary w-5 h-5' />
+                                        <TableCell className='text-center font-semibold whitespace-nowrap'>₦{Number(product.productPrice).toLocaleString('en-NG')}</TableCell>
+                                        <TableCell><p className='max-w-56 truncate text-sm text-[#776b60]' title={product.productDescription}>{product.productDescription}</p></TableCell>
+                                        <TableCell className='text-sm'>{product.categories?.categoryName}</TableCell>
+                                        <TableCell className='text-sm'>{product.regions?.regionName}</TableCell>
+                                        <TableCell>
+                                          <div className='flex items-center gap-2'>
+                                            <button type='button' disabled={deleteLoading} aria-label={`Delete ${product.productName}`} onClick={() => dispatch(deleteProduct(product.id))} className='grid size-9 place-items-center border border-[#eaded4] text-[#a33075] hover:bg-[#f9e9f2] focus-visible:outline-2 focus-visible:outline-[#a33075] disabled:opacity-50'><GoTrash size={17} /></button>
                                                 
-                                            <MdModeEditOutline onClick={() => {
+                                            <button type='button' aria-label={`Edit ${product.productName}`} onClick={() => {
                                                 setSelectedProduct(product)
                                                 // Prefill edit form values
                                                 resetEdit({
@@ -260,8 +273,9 @@ const Products = () => {
                                                     productImage: undefined
                                                 })
                                                 setOpenEditModal(true)
-                                            }} className='text-primary w-5 h-5' />
-                                            </TableCell>
+                                            }} className='grid size-9 place-items-center border border-[#eaded4] text-[#30251f] hover:bg-[#eee7df] focus-visible:outline-2 focus-visible:outline-[#a33075]'><MdModeEditOutline size={17} /></button>
+                                          </div>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                         </TableBody>
@@ -279,16 +293,16 @@ const Products = () => {
                         disableInitialCallback={true}
                     />
 
-                {openModal &&  
-                <Modal 
-                formSize={"lg"}
-                handleModal={setOpenModal} 
-                children={
-                <form onSubmit={handleSubmit(onSubmit)} className='w-full overflow-y-scroll'>
-                    <div className='w-full flex flex-col gap-8'>
+                {openModal && <Modal formSize="lg" handleModal={setOpenModal}>
+                <form onSubmit={handleSubmit(onSubmit)} className='w-full space-y-5 [&_label]:text-xs [&_label]:font-semibold [&_label]:tracking-wide [&_label]:text-[#5e5148]'>
+                    <div className='mb-6 pr-10'>
+                      <p className='mb-2 text-[11px] font-semibold tracking-[.18em] text-[#a33075] uppercase'>New listing</p>
+                      <h2 className="text-3xl tracking-[-.04em] [font-family:Georgia,'Times_New_Roman',serif]">Add a product</h2>
+                    </div>
+                    <div className='grid gap-5 sm:grid-cols-2'>
                         <div className='flex flex-col gap-1 w-full'>
-                            <label>Brands</label>
-                            <select {...register('productRegion')} className='appearance-none w-full h-[50px] rounded-md border-[1px] border-black/40 px-5'>
+                            <label htmlFor='create-brand'>Brand</label>
+                            <select {...register('productRegion')} id='create-brand' className='appearance-none w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075]'>
                                 <option disabled selected >Select product Brand</option>
                                 {regions?.map(region => (
                                     <option key={region.id} value={region.id}>{region.regionName}</option>
@@ -298,8 +312,8 @@ const Products = () => {
                         </div>
 
                         <div className='flex flex-col gap-1 w-full'>
-                            <label>Category</label>
-                            <select {...register('productCategory')} className='appearance-none w-full h-[50px] rounded-md border-[1px] border-black/40 px-5'>
+                            <label htmlFor='create-category'>Category</label>
+                            <select {...register('productCategory')} id='create-category' className='appearance-none w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075]'>
                                 <option disabled selected >Select product category</option>
                                 {categories?.map(category => (
                                     <option key={category.id} value={category.id}>{category.categoryName}</option>
@@ -308,60 +322,59 @@ const Products = () => {
                             {errors.productCategory && (<p className="mt-1 text-red-500 text-sm">{errors.productCategory.message}</p>)}
                         </div>
 
-                        <div className='flex flex-col gap-1 w-full my-3'>
-                            <label>Product Name</label>
-                            <input {...register('productName')} type='text' className='appearance-none w-full h-[50px] rounded-md border-[1px] border-black/40 px-5'/>
+                        <div className='flex flex-col gap-1 w-full sm:col-span-2'>
+                            <label htmlFor='create-name'>Product name</label>
+                            <input {...register('productName')} id='create-name' type='text' className='appearance-none w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075]'/>
                             {errors.productName && (<p className="mt-1 text-red-500 text-sm">{errors.productName.message}</p>)}
                         </div>
                     </div>
 
-                    <div className='w-full flex items-start  gap-8 my-3'>
+                    <div className='grid gap-5 sm:grid-cols-2'>
                         <div className='flex flex-col gap-1 w-full'>
-                            <label>Price</label>
-                            <input {...register('productPrice')} type='number' className='w-full h-[50px] rounded-md border-[1px] border-black/40 px-5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'/>
+                            <label htmlFor='create-price'>Discounted price</label>
+                            <input {...register('productPrice')} id='create-price' type='number' className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'/>
                             {errors.productPrice && (<p className="mt-1 text-red-500 text-sm">{errors.productPrice.message}</p>)}
                         </div>
                         <div className='flex flex-col gap-1 w-full'>
-                            <label className='text-sm lg:text-base'>Discount (optional)</label>
-                            <input {...register('discountedPrice')} type='text' className='w-full h-[50px] rounded-md border-[1px] border-black/40 px-5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' />
+                            <label htmlFor='create-original' className='text-sm lg:text-base'>Original price (optional)</label>
+                            <input {...register('discountedPrice')} id='create-original' type='text' className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' />
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-1 w-full my-3'>
-                        <label>Description</label>
-                        <textarea {...register('productDescription')} type='text' className='appearance-none w-full h-[150px] rounded-md border-[1px] border-black/40 p-5'/>
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label htmlFor='create-description'>Description</label>
+                        <textarea {...register('productDescription')} id='create-description' className='w-full min-h-32 border border-[#d8c9ba] bg-white p-4 text-sm outline-none focus:border-[#a33075]'/>
                         {errors.productDescription && (<p className="mt-1 text-red-500 text-sm">{errors.productDescription.message}</p>)}
                     </div>
 
-                    <div className='flex flex-col gap-1 w-max my-3'>
-                        <label htmlFor='image' className='flex items-center gap-3  rounded-md cursor-pointer'>
-                            Upload Image
+                    <div className='flex flex-col gap-2 w-full'>
+                        <label htmlFor='create-image' className='flex items-center gap-3 cursor-pointer'>
+                            Product image
                             <BiCloudUpload className='text-primary w-8 h-8' />
                         </label>
-                        <input {...register('productImage')}   id='image' type='file' className='appearance-none cursor-pointer'/>
+                        <input {...register('productImage')} id='create-image' type='file' accept='image/*' className='w-full cursor-pointer text-sm'/>
                         {errors.productImage && (<p className="mt-1 text-red-500 text-sm">{errors.productImage.message}</p>)}
                     </div>
 
-                    <Button type='submit' className='w-full h-[50px]'>
+                    <Button type='submit' disabled={isLoading} className='w-full h-[50px] rounded-none bg-[#30251f] hover:bg-[#50372f]'>
                         {isLoading ? 'Creating' : "Create Product"}
                      
                     </Button>
                 </form>
-                }
-                />}
+                </Modal>}
 
 
-                {openEditModal &&  
-                <Modal 
-                formSize={"lg"}
-                handleModal={setOpenEditModal} 
-                children={
-                <form onSubmit={handleSubmitEdit(onSubmitEdit)} className='w-full overflow-y-scroll'>
-                    <div className='w-full flex flex-col gap-8'>
+                {openEditModal && <Modal formSize="lg" handleModal={setOpenEditModal}>
+                <form onSubmit={handleSubmitEdit(onSubmitEdit)} className='w-full space-y-5 [&_label]:text-xs [&_label]:font-semibold [&_label]:tracking-wide [&_label]:text-[#5e5148]'>
+                    <div className='mb-6 pr-10'>
+                      <p className='mb-2 text-[11px] font-semibold tracking-[.18em] text-[#a33075] uppercase'>Edit listing</p>
+                      <h2 className="text-3xl tracking-[-.04em] [font-family:Georgia,'Times_New_Roman',serif]">Update product</h2>
+                    </div>
+                    <div className='grid gap-5 sm:grid-cols-2'>
                         <div className='flex flex-col gap-1 w-full'>
-                            <label>Regions</label>
-                            <select {...registerEdit('productRegion')} className='appearance-none w-full h-[50px] rounded-md border-[1px] border-black/40 px-5'>
-                                <option disabled selected >Select product category</option>
+                            <label htmlFor='edit-brand'>Brand</label>
+                            <select {...registerEdit('productRegion')} id='edit-brand' className='appearance-none w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075]'>
+                                <option disabled selected >Select product brand</option>
                                 {regions?.map(region => (
                                     <option key={region.id} value={region.id}>{region.regionName}</option>
                                 ))}
@@ -370,8 +383,8 @@ const Products = () => {
                         </div>
 
                         <div className='flex flex-col gap-1 w-full'>
-                            <label>Category</label>
-                            <select {...registerEdit('productCategory')} className='appearance-none w-full h-[50px] rounded-md border-[1px] border-black/40 px-5'>
+                            <label htmlFor='edit-category'>Category</label>
+                            <select {...registerEdit('productCategory')} id='edit-category' className='appearance-none w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075]'>
                                 <option disabled selected >Select product category</option>
                                 {categories?.map(category => (
                                     <option key={category.id} value={category.id}>{category.categoryName}</option>
@@ -380,48 +393,47 @@ const Products = () => {
                             {editErrors.productCategory && (<p className="mt-1 text-red-500 text-sm">{editErrors.productCategory.message}</p>)}
                         </div>
 
-                        <div className='flex flex-col gap-1 w-full my-3'>
-                            <label>Product Name</label>
-                            <input {...registerEdit('productName')} type='text' className='appearance-none w-full h-[50px] rounded-md border-[1px] border-black/40 px-5'/>
+                        <div className='flex flex-col gap-1 w-full sm:col-span-2'>
+                            <label htmlFor='edit-name'>Product name</label>
+                            <input {...registerEdit('productName')} id='edit-name' type='text' className='appearance-none w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075]'/>
                             {editErrors.productName && (<p className="mt-1 text-red-500 text-sm">{editErrors.productName.message}</p>)}
                         </div>
                     </div>
 
-                    <div className='w-full flex items-start  gap-8 my-3'>
+                    <div className='grid gap-5 sm:grid-cols-2'>
                         <div className='flex flex-col gap-1 w-full'>
-                            <label>Price</label>
-                            <input {...registerEdit('productPrice')} type='number' className='w-full h-[50px] rounded-md border-[1px] border-black/40 px-5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'/>
+                            <label htmlFor='edit-price'>Discounted price</label>
+                            <input {...registerEdit('productPrice')} id='edit-price' type='number' className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'/>
                             {editErrors.productPrice && (<p className="mt-1 text-red-500 text-sm">{editErrors.productPrice.message}</p>)}
                         </div>
 
                         <div className='flex flex-col gap-1 w-full'>
-                            <label className='text-sm lg:text-base'>Discount (optional)</label>
-                            <input {...registerEdit('discountedPrice')} type='text' className='w-full h-[50px] rounded-md border-[1px] border-black/40 px-5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' />
+                            <label htmlFor='edit-original' className='text-sm lg:text-base'>Original price (optional)</label>
+                            <input {...registerEdit('discountedPrice')} id='edit-original' type='text' className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' />
                             {editErrors.discountedPrice && (<p className="mt-1 text-red-500 text-sm">{editErrors.discountedPrice.message}</p>)}
                         </div>
                     </div>
 
-                    <div className='flex flex-col gap-1 w-full my-3'>
-                        <label>Description</label>
-                        <textarea {...registerEdit('productDescription')} type='text' className='appearance-none w-full h-[150px] rounded-md border-[1px] border-black/40 p-5'/>
+                    <div className='flex flex-col gap-1 w-full'>
+                        <label htmlFor='edit-description'>Description</label>
+                        <textarea {...registerEdit('productDescription')} id='edit-description' className='w-full min-h-32 border border-[#d8c9ba] bg-white p-4 text-sm outline-none focus:border-[#a33075]'/>
                         {editErrors.productDescription && (<p className="mt-1 text-red-500 text-sm">{editErrors.productDescription.message}</p>)}
                     </div>
 
-                    <div className='flex flex-col gap-1 w-max my-3'>
-                        <label htmlFor='image' className='flex items-center gap-3  rounded-md cursor-pointer'>
-                            Upload Image
+                    <div className='flex flex-col gap-2 w-full'>
+                        <label htmlFor='edit-image' className='flex items-center gap-3 cursor-pointer'>
+                            Replace product image (optional)
                             <BiCloudUpload className='text-primary w-8 h-8' />
                         </label>
-                        <input {...registerEdit('productImage')}   id='image' type='file' className='appearance-none cursor-pointer'/>
+                        <input {...registerEdit('productImage')} id='edit-image' type='file' accept='image/*' className='w-full cursor-pointer text-sm'/>
                         {/* Image optional on edit */}
                     </div>
 
-                    <Button type='submit' className='w-full h-[50px]'>
+                    <Button type='submit' disabled={isUpdating} className='w-full h-[50px] rounded-none bg-[#30251f] hover:bg-[#50372f]'>
                         {isUpdating ? 'Updating...' : 'Update Product'}
                     </Button>
                 </form>
-                }
-                />}
+                </Modal>}
                 
     </div>
   )

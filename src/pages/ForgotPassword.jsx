@@ -1,6 +1,5 @@
 import { useForgotPasswordMutation } from '@/app/features/api/authApiSlice'
 import { zodResolver } from '@hookform/resolvers/zod'
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -11,7 +10,7 @@ const forgotPasswordSchema = z.object({
 const ForgotPassword = () => {
   const [forgotPassword, {isLoading}] = useForgotPasswordMutation()
 
-  const {register, handleSubmit,reset, formState:{errors,isSubmitting}} = useForm({
+  const {register, handleSubmit, formState:{errors}} = useForm({
           resolver: zodResolver(forgotPasswordSchema)
   })
 
@@ -28,18 +27,18 @@ const ForgotPassword = () => {
 
 
   return (
-    <div className='p-5 w-screen flex  justify-center items-center my-[100px] '>
-      <form onSubmit={handleSubmit(onSubmit)}  className='w-full border-[1px] border-black/30 rounded-md shadow-xs p-6 lg:w-[400px]'>
+    <div className='min-h-[calc(100vh-5rem)] w-full bg-[#f9f6f1] px-5 pt-32 pb-16 flex justify-center items-center'>
+      <form onSubmit={handleSubmit(onSubmit)}  className='w-full border border-[#e3d7c9] bg-white p-7 shadow-[6px_6px_0_#e5d5c5] lg:w-[400px]'>
 
-        <h1 className='font-semibold text-2xl mb-1'>Forgot Password</h1>
+        <h1 className="mb-2 text-3xl tracking-[-.04em] text-[#30251f] [font-family:Georgia,'Times_New_Roman',serif]">Forgot Password</h1>
         <p className='text-xs text-gray-500 mb-5'>We will send you an email to reset your passwords</p>
         <div className='flex flex-col gap-7'>
 
-          <input {...register('email')} className='border border-gray rounded-sm shadow-xs h-10 p-3 placeholder:text-xs' type="email" name="email" placeholder='Email' />
+          <input {...register('email')} className='min-h-12 w-full border border-[#d8c9ba] bg-white px-4 text-sm outline-none placeholder:text-[#92877e] focus:border-[#a33075]' type="email" name="email" placeholder='Email' />
           {errors.email && (<p className="-mt-5 text-red-500 text-sm">{errors.email.message}</p>)}
 
 
-          <button className='bg-primary rounded-sm shadow-lg h-10 text-white font-semibold mb-6'>{isLoading ? (<div className='loader'></div> ) : 'Submit'}</button>
+          <button className='min-h-12 bg-[#30251f] px-5 text-sm font-semibold text-white hover:bg-[#50372f]'>{isLoading ? (<div className='loader'></div> ) : 'Submit'}</button>
         </div>
       </form>
     </div>
