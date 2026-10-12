@@ -100,6 +100,8 @@ function Shop() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  // console.log(data)
+
 
   return (
     <div className='w-full min-h-screen bg-[#f9f6f1] pt-20'>

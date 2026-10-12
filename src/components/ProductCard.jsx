@@ -48,8 +48,8 @@ const ProductCard = ({ productImage, productName, productPrice, discountedPrice,
         </h3>
         <div className="mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-3 border-t border-[#d9cec0] pt-[13px]">
           <div className="flex min-w-0 flex-col gap-0.5 [overflow-wrap:anywhere]">
-            <span className="text-[13px] font-semibold tracking-[-.025em]">{formatPrice(productPrice)}</span>
-            {isOnSale && <del className="text-[10px] text-[#796d63]">{formatPrice(discountedPrice)}</del>}
+            <span className="text-[13px] font-semibold tracking-[-.025em]">{discountedPrice && discountedPrice < productPrice ? formatPrice(discountedPrice) : formatPrice(productPrice)}</span>
+            {isOnSale && <del className="text-[10px] text-[#796d63]">{formatPrice(productPrice)}</del>}
           </div>
           <button
             type="button"

@@ -26,6 +26,8 @@ function Sales() {
     window.scrollTo({ top: 400, behavior: 'smooth' })
   }
 
+  // console.log(saleProducts)
+
   return (
     <main className='min-h-screen bg-[#f9f6f1] pt-20 text-[#30251f]'>
       <div className='mx-auto max-w-[1450px] px-5 pt-7 sm:pt-10 lg:px-10'>

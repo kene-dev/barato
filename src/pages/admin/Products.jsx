@@ -331,12 +331,13 @@ const Products = () => {
 
                     <div className='grid gap-5 sm:grid-cols-2'>
                         <div className='flex flex-col gap-1 w-full'>
-                            <label htmlFor='create-price'>Discounted price</label>
+                            <label htmlFor='create-price'>Product price</label>
                             <input {...register('productPrice')} id='create-price' type='number' className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'/>
                             {errors.productPrice && (<p className="mt-1 text-red-500 text-sm">{errors.productPrice.message}</p>)}
                         </div>
+
                         <div className='flex flex-col gap-1 w-full'>
-                            <label htmlFor='create-original' className='text-sm lg:text-base'>Original price (optional)</label>
+                            <label htmlFor='create-original' className='text-sm lg:text-base'>Discounted Price (optional)</label>
                             <input {...register('discountedPrice')} id='create-original' type='text' className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' />
                         </div>
                     </div>
@@ -402,13 +403,13 @@ const Products = () => {
 
                     <div className='grid gap-5 sm:grid-cols-2'>
                         <div className='flex flex-col gap-1 w-full'>
-                            <label htmlFor='edit-price'>Discounted price</label>
+                            <label htmlFor='edit-price'>Product Price</label>
                             <input {...registerEdit('productPrice')} id='edit-price' type='number' className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'/>
                             {editErrors.productPrice && (<p className="mt-1 text-red-500 text-sm">{editErrors.productPrice.message}</p>)}
                         </div>
 
                         <div className='flex flex-col gap-1 w-full'>
-                            <label htmlFor='edit-original' className='text-sm lg:text-base'>Original price (optional)</label>
+                            <label htmlFor='edit-original' className='text-sm lg:text-base'>Discounted Price (optional)</label>
                             <input {...registerEdit('discountedPrice')} id='edit-original' type='text' className='w-full min-h-12 border border-[#d8c9ba] bg-white px-4 text-sm outline-none focus:border-[#a33075] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none' />
                             {editErrors.discountedPrice && (<p className="mt-1 text-red-500 text-sm">{editErrors.discountedPrice.message}</p>)}
                         </div>
