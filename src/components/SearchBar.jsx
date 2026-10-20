@@ -4,6 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { ArrowRight, Clock3, Search, Sparkles, X } from 'lucide-react'
 import { useGetProductsQuery } from '@/app/features/api/productApiSlice'
 import useDebounce from '@/hooks/useDebounce'
+import { hasPreviousPrice } from '@/lib/productPricing'
 
 const popularSearches = ['Perfume', 'Cologne', 'Fragrance', 'Designer scents', 'Luxury perfumes']
 
@@ -96,7 +97,10 @@ function SearchModal({ isOpen, onClose, onSearch }) {
                 </div>
                 {isSearching ? <p role='status' className='border-t border-[#e3d8cc] py-10 text-sm text-[#796a5e]'>Looking through the collection…</p> : suggestions.length > 0 ? (
                   <div className='border-t border-[#e3d8cc]'>
-                    {suggestions.map(product => (
+                    {suggestions.map(product => {
+                      const isOnSale = hasPreviousPrice(product.productPrice, product.discountedPrice)
+
+                      return (
                       <button key={product.id} type='button' onClick={() => { navigate(`/shop/${product.id}`); closeModal() }} className='group flex min-h-22 w-full items-center gap-4 border-b border-[#e3d8cc] py-3 text-left transition-colors hover:bg-[#f2eae1] focus-visible:outline-2 focus-visible:outline-[#a33075]'>
                         <span className='size-16 shrink-0 overflow-hidden bg-[#ece2d7] sm:size-18'>
                           {product.productThumbnail || product.productImage ? <img src={product.productThumbnail || product.productImage} alt='' className='size-full object-cover transition-transform duration-300 group-hover:scale-105' /> : <span className='grid size-full place-items-center text-xl text-[#a33075] [font-family:Georgia,serif]'>M</span>}
@@ -104,11 +108,18 @@ function SearchModal({ isOpen, onClose, onSearch }) {
                         <span className='min-w-0 flex-1'>
                           <span className="block truncate text-[17px] leading-tight tracking-[-.025em] [font-family:Georgia,'Times_New_Roman',serif]">{product.productName}</span>
                           <span className='mt-1 block truncate text-xs text-[#796a5e]'>{product.productDescription}</span>
-                          <span className='mt-1 block text-xs font-semibold text-[#a33075]'>₦{Number(product.productPrice).toLocaleString('en-NG')}</span>
+                          <span className='mt-1 flex flex-wrap items-center gap-x-2 gap-y-1'>
+                            <span className='text-xs font-semibold text-[#a33075]'>₦{Number(isOnSale ? product.discountedPrice : product.productPrice).toLocaleString('en-NG', { maximumFractionDigits: 0 })}</span>
+                            {isOnSale && <>
+                              <del className='text-[10px] text-[#796a5e]'>₦{Number(product.productPrice).toLocaleString('en-NG', { maximumFractionDigits: 0 })}</del>
+                              <span className='bg-[#f83dbe] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[.06em] text-[#30251f]'>On sale</span>
+                            </>}
+                          </span>
                         </span>
                         <ArrowRight size={17} className='mr-1 shrink-0 text-[#a33075] transition-transform group-hover:translate-x-1' aria-hidden='true' />
                       </button>
-                    ))}
+                      )
+                    })}
                   </div>
                 ) : <div className='border-t border-[#e3d8cc] py-9'><p className="text-2xl tracking-[-.04em] [font-family:Georgia,'Times_New_Roman',serif]">No scent by that name yet.</p><p className='mt-2 text-sm leading-6 text-[#796a5e]'>Try another name, or see the full search results.</p></div>}
                 <button type='button' onClick={() => handleSearch()} className='mt-5 inline-flex min-h-11 items-center gap-2 border border-[#30251f] px-5 text-xs font-semibold uppercase tracking-[.08em] transition-colors hover:bg-[#30251f] hover:text-white'>View all results <ArrowRight size={15} aria-hidden='true' /></button>
