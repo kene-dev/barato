@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import { getProductPrice } from '@/lib/productPricing';
 
 const initialState = {
   cartItems: [],
@@ -51,12 +52,12 @@ const cartSlice = createSlice({
 
 export const { addToCart, removeFromCart, incrementItem, decrementItem, clearCart } = cartSlice.actions;
 
-// Selectors remain the same
+// Use the same effective unit price for cart and checkout totals.
 export const selectCartItems = (state) => state.persistedReducer.cart.cartItems;
 
 export const selectCartTotal = (state) => 
   state.persistedReducer.cart.cartItems.reduce(
-    (total, item) => total + (item.productPrice * item.quantity),
+    (total, item) => total + (getProductPrice(item) * item.quantity),
     0
   );
 

@@ -60,7 +60,7 @@ const ProductCard = ({ productImage, productName, productPrice, discountedPrice,
             }`}
             aria-label={isInCart ? `${productName} is already in cart` : `Add ${productName} to cart`}
             onClick={() => {
-              if (!isInCart) dispatch(addToCart({ productImage, productName, productPrice, id }))
+              if (!isInCart) dispatch(addToCart({ productImage, productName, productPrice, discountedPrice, id }))
             }}
           >
             <span>{isInCart ? 'In cart' : 'Add to cart'}</span>

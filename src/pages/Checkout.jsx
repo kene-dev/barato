@@ -19,6 +19,9 @@ import { GoTrash } from "react-icons/go";
 import { useNavigate } from 'react-router';
 import { useCreateOrderMutation } from '@/app/features/api/orderApiSlice';
 import { toast } from 'react-toastify';
+import { getProductPrice, hasPreviousPrice } from '@/lib/productPricing';
+
+const money = amount => Number(amount).toLocaleString('en-NG', { style: 'currency', currency: 'NGN' });
 
 
 const addShippingSchema = z.object({
@@ -176,7 +179,10 @@ const Checkout = () => {
                                         {item.quantity}
                                     </TableCell>
 
-                                    <TableCell colSpan={2} className='text-wrap w-max overflow-x-scroll'>₦{item.productPrice * item.quantity}</TableCell>
+                                    <TableCell className='text-wrap w-max'>
+                                        <span className='block'>{money(getProductPrice(item) * item.quantity)}</span>
+                                        {hasPreviousPrice(item.productPrice, item.discountedPrice) && <del className='block text-xs text-[#796a5e]'>{money(item.productPrice * item.quantity)}</del>}
+                                    </TableCell>
 
                                     <TableCell className='md:w-fit'><GoTrash onClick={() => dispatch(removeFromCart(item.id))} className='text-primary w-5 h-5' /></TableCell>
                                 </TableRow>
@@ -195,7 +201,7 @@ const Checkout = () => {
                         <hr className='w-full border-[1px] border-black/20'/>
                             <div className='w-full flex items-center justify-between'>
                                 <h1 className='font-semibold lg:text-xl'>Total</h1>
-                                <p className='lg:text-xl'>₦{parseFloat(cartTotal).toFixed(2)}</p>
+                                <p className='lg:text-xl'>{money(cartTotal)}</p>
                             </div>
                         <hr />
                     </div>

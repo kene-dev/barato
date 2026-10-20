@@ -1,3 +1,4 @@
+import { getProductPrice } from '@/lib/productPricing';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -592,7 +593,7 @@ function ProductCard({ product, index }) {
                     <button
                         type="button"
                         disabled={isInCart}
-                        onClick={() => dispatch(addToCart({ productImage: product.image, productName: product.name, productPrice: product.price, id: product.id }))}
+                        onClick={() => dispatch(addToCart({ productImage: product.image, productName: product.name, productPrice: product.originalPrice, discountedPrice: product.price, id: product.id }))}
                         className={`inline-flex min-h-11 items-center gap-2 border px-3 py-2 text-xs font-medium focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ba167f] ${isInCart ? 'cursor-not-allowed border-[#d1cbc5] bg-[#e6e2dd] text-[#716b65]' : 'border-[#30251f] bg-[#f83dbe] shadow-[3px_3px_0_#30251f] transition-transform hover:-translate-x-px hover:-translate-y-px active:translate-x-[3px] active:translate-y-[3px]'}`}
                     >
                         {isInCart ? 'In cart' : 'Add to cart'}
@@ -633,8 +634,8 @@ function FeaturedProducts() {
                     id: product.id,
                     name: product.productName,
                     brand: brandName,
-                    price: product.productPrice,
-                    originalPrice: product.discountedPrice,
+                    price: getProductPrice(product),
+                    originalPrice: product.productPrice,
                     image: product.productImage || 'https://images.unsplash.com/photo-1647507653704-bde7f2d6dbf0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
                     featured: true,
                 });

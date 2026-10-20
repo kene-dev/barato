@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ArrowUpRight, Minus, Plus, Trash2 } from 'lucide-react'
 import { decrementItem, incrementItem, removeFromCart, selectCartItems, selectCartTotal } from '@/app/features/cartSlice'
 import PageIntro from '@/components/PageIntro'
+import { getProductPrice, hasPreviousPrice } from '@/lib/productPricing'
 
 const money = amount => Number(amount).toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })
 
@@ -13,7 +14,7 @@ const Cart = () => {
 
   const proceedToCheckout = () => {
     if (!cartItems.length) return
-    const itemList = cartItems.map(item => `*${item.productName}* - Qty: ${item.quantity} - ${money(item.productPrice * item.quantity)}`).join('\n')
+    const itemList = cartItems.map(item => `*${item.productName}* - Qty: ${item.quantity} - ${money(getProductPrice(item) * item.quantity)}`).join('\n')
     const message = encodeURIComponent(`Hello! I would like to place an order:\n\n${itemList}\n\nTotal: ${money(cartTotal)}`)
     window.open(`https://wa.me/2348060119051?text=${message}`, '_blank', 'noopener,noreferrer')
   }
@@ -29,7 +30,13 @@ const Cart = () => {
                 <Link to={`/shop/${item.id}`} className="shrink-0 self-start focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a33075]"><img src={item.productImage} alt={item.productName} className="size-24 object-cover bg-[#eee6db] sm:size-28" /></Link>
                 <div className="min-w-0 flex-1">
                   <Link to={`/shop/${item.id}`} className="text-xl tracking-[-.03em] hover:text-[#a33075] [font-family:Georgia,'Times_New_Roman',serif]">{item.productName}</Link>
-                  <p className="mt-1 text-sm text-[#776b60]">{money(item.productPrice)} each</p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-[#776b60]">
+                    <span>{money(getProductPrice(item))} each</span>
+                    {hasPreviousPrice(item.productPrice, item.discountedPrice) && <>
+                      <del className="text-xs">{money(item.productPrice)}</del>
+                      <span className="bg-[#f83dbe] px-2 py-0.5 text-[10px] font-semibold uppercase text-[#30251f]">On sale</span>
+                    </>}
+                  </div>
                   <div className="mt-4 inline-flex h-10 items-center border border-[#cbbcad] bg-white" aria-label={`Quantity for ${item.productName}`}>
                     <button type="button" onClick={() => dispatch(decrementItem(item.id))} aria-label={`Decrease quantity of ${item.productName}`} className="grid size-10 place-items-center hover:bg-[#eee7df] focus-visible:outline-2 focus-visible:outline-[#a33075]"><Minus size={15} /></button>
                     <span className="grid h-full min-w-10 place-items-center border-x border-[#cbbcad] text-sm">{item.quantity}</span>
@@ -37,7 +44,7 @@ const Cart = () => {
                   </div>
                 </div>
                 <div className="flex items-center justify-between gap-6 sm:flex-col sm:items-end">
-                  <p className="text-base font-semibold">{money(item.productPrice * item.quantity)}</p>
+                  <p className="text-base font-semibold">{money(getProductPrice(item) * item.quantity)}</p>
                   <button type="button" onClick={() => dispatch(removeFromCart(item.id))} aria-label={`Remove ${item.productName} from cart`} className="grid size-9 place-items-center text-[#a33075] hover:bg-[#f7e8ee] focus-visible:outline-2 focus-visible:outline-[#a33075]"><Trash2 size={18} /></button>
                 </div>
               </div>
